@@ -13,6 +13,7 @@ export class CompetenciaListComponent implements OnInit {
 
   competencias: Competencia[] = [];
   categorias: SelectItem[];
+  displayModal: boolean = false;
 
   constructor(
     private competenciaService: CompetenciaService,
@@ -38,6 +39,10 @@ export class CompetenciaListComponent implements OnInit {
 
   navegar(competenciaId: number) {
     this.router.navigate([`${competenciaId}`], { relativeTo: this.route });
+  }
+
+  showModal() {
+    this.displayModal = true;
   }
 
 }
