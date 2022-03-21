@@ -5,19 +5,26 @@
                 <input id="float-input" type="text" pInputText formControlName="nome" />
                 <label for="float-input">Nome</label>
             </span>
+            <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('nome'))" class="p-invalid"
+                style="color: red;">{{mensagemDeValidacao(competenciaForm.get('nome'))}}</small>
         </div>
         <div class="col-6">
             <span class="ui-float-label">
-                <p-dropdown [options]="categorias" optionLabel="label" [showClear]="true" formControlName="categoria">
+                <p-dropdown [options]="categorias" placeholder="." optionLabel="nome" [showClear]="true"
+                    formControlName="categoria">
                 </p-dropdown>
                 <label for="float-input">Categoria</label>
             </span>
+            <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('categoria'))" class="p-invalid"
+                style="color: red;">{{mensagemDeValidacao(competenciaForm.get('categoria'))}}</small>
         </div>
         <div class="col-12 mt-3">
             <span class="ui-float-label">
-                <textarea pInputTextarea id="float-input" rows="12" cols="50" formControlName="descricao"></textarea>
+                <textarea pInputTextarea id="float-input" rows="10" cols="50" formControlName="descricao"></textarea>
                 <label for="float-input">Descrição</label>
             </span>
+            <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('descricao'))" class="p-invalid"
+                style="color: red;">{{mensagemDeValidacao(competenciaForm.get('descricao'))}}</small>
         </div>
     </div>
 </form>

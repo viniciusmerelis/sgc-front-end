@@ -1,5 +1,9 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageNotificationService } from '@nuvem/primeng-components';
+import { BlockUIService } from 'ng-block-ui';
+import { ConfirmationService } from 'primeng';
 import { Colaborador } from '../../models/colaborador.model';
 import { ColaboradorService } from '../../service/colaborador.service';
 
@@ -16,6 +20,9 @@ export class ColaboradorListComponent implements OnInit {
         private colaboradorService: ColaboradorService,
         private router: Router,
         private route: ActivatedRoute,
+        private messageService: PageNotificationService,
+        private blockUI: BlockUIService,
+        private confirmationDialog: ConfirmationService
     ) { }
 
     ngOnInit() {
@@ -24,18 +31,35 @@ export class ColaboradorListComponent implements OnInit {
 
     listarColaboradores() {
         return this.colaboradorService.listar().subscribe(
-            colaborador => this.colaboradores = colaborador
+            colaborador => {
+                this.colaboradores = colaborador
+            }, (err: HttpErrorResponse) => {
+                this.messageService.addErrorMessage('Não foi possível listar os colaboradores.');
+            }
         );
     }
 
     excluir(colaborador: Colaborador) {
-        return this.colaboradorService.excluir(colaborador.id).subscribe(() => {
-            this.colaboradores = this.colaboradores.filter(c => c.id !== colaborador.id)
+        this.confirmationDialog.confirm({
+            header: 'Confirmar exclusão',
+            message: 'Deseja realmente excluir esse colaborador?',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                this.colaboradorService.excluir(colaborador.id).subscribe(() => {
+                    this.colaboradores = this.colaboradores.filter(c => c.id !== colaborador.id);
+                    this.messageService.addSuccessMessage('Colaborador excluido com sucesso!');
+                }, (err: HttpErrorResponse) => {
+                    this.messageService.addErrorMessage(err.error.detail, err.error.title)
+                });
+            },
+            reject: () => {
+                this.confirmationDialog.close();
+            }
         });
     }
 
     editar(colaboradorId: number) {
         this.router.navigate([`${colaboradorId}`], { relativeTo: this.route });
     }
-
 }

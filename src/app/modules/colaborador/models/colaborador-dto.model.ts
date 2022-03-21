@@ -1,7 +1,6 @@
-import { CompetenciaDtoId } from "./competencia-dto-id.model";
+import { Nivel } from "./nivel.model";
 
 export interface ColaboradorDto {
-    id: number;
     nome: string;
     sobrenome: string;
     cpf: string;
@@ -10,4 +9,9 @@ export interface ColaboradorDto {
     dataAdmissao: Date;
     senioridadeId: number;
     competencias: CompetenciaDtoId[];
+}
+
+export interface CompetenciaDtoId {
+    id: number;
+    nivel: Nivel;
 }
