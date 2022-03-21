@@ -16,6 +16,7 @@ export class CompetenciaFormComponent implements OnInit {
   competenciaForm: FormGroup;
   @Input() displayModal: boolean = false;
   @Input() competencia: Competencia;
+  @Output() onSubmit = new EventEmitter<Competencia>()
 
   constructor(
     private competenciaService: CompetenciaService,
@@ -25,6 +26,16 @@ export class CompetenciaFormComponent implements OnInit {
   ngOnInit() {
     this.listarCategorias();
     this.criarCompetenciaForm();
+    if (this.competencia == undefined) {
+        this.competenciaForm.setValue({
+            id: null,
+            nome: null,
+            descricao: null,
+            categoria: null
+        })
+    } else {
+        this.competenciaForm.setValue(this.competencia);
+    }
   }
 
   criarCompetenciaForm() {
@@ -33,13 +44,18 @@ export class CompetenciaFormComponent implements OnInit {
       nome: new FormControl(null, Validators.required),
       descricao: new FormControl(null, Validators.required),
       categoria: new FormControl(null, Validators.required)
-    })
+    });
   }
 
   listarCategorias() {
     return this.categoriaService.buscarCategoriasSelectItem().subscribe(
       categoria => this.categorias = categoria
     );
+  }
+
+  submit(){
+      const competencia: Competencia = this.competenciaForm.value;
+      this.onSubmit.next(competencia)
   }
 
 }

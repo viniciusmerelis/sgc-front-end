@@ -1,1 +1,32 @@
-<p>colaborador-list works!</p>
+<p-card>
+    <div class="grid mb-3 mt-2 pl-2 pr-2 align-items-center">
+        <h2>Listagem de Colaboradores</h2>
+        <span class="col"></span>
+        <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Novo Colaborador"></button>
+    </div>
+    <p-table [value]="colaboradores" [responsive]="true" paginator="true" rows="10">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Data de Nascimento</th>
+                <th>Senioridade</th>
+                <th [ngStyle]="{'width': '125px'}">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-colaborador>
+            <tr>
+                <td>{{colaborador.nome}} {{colaborador.sobrenome}}</td>
+                <td>{{colaborador.email}}</td>
+                <td>{{colaborador.dataNascimento | date: 'dd/MM/yyyy'}}</td>
+                <td>{{colaborador.senioridade.nome}}</td>
+                <td style="text-align: center">
+                    <button pButton pRipple type="button" class="p-button-raised" icon="ui-icon-pencil"
+                        (click)="editar(colaborador.id)"></button>
+                    <button pButton type="button" class="p-button-raised ui-button-danger" icon="ui-icon-trash"
+                        (click)="excluir(colaborador)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
