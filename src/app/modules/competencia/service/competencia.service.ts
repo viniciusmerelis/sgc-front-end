@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CompetenciaDtoInput } from '../models/competencia-dto.model';
+import { CompetenciaDto } from '../models/competencia-dto.model';
 import { Competencia } from '../models/competencia.model';
 
 @Injectable({
@@ -23,12 +23,12 @@ export class CompetenciaService {
     return this.http.get<Competencia>(`${this.apiUrl}/${competenciaId}`);
   }
 
-  salvar(competencia: CompetenciaDtoInput): Observable<CompetenciaDtoInput> {
-    return this.http.post<CompetenciaDtoInput>(this.apiUrl, competencia);
+  salvar(competencia: CompetenciaDto): Observable<Competencia> {
+    return this.http.post<Competencia>(this.apiUrl, competencia);
   }
 
-  atualizar(competenciaId: number, competencia: CompetenciaDtoInput): Observable<CompetenciaDtoInput> {
-    return this.http.put<CompetenciaDtoInput>(`${this.apiUrl}/${competenciaId}`, competencia);
+  atualizar(competenciaId: number, competencia: CompetenciaDto): Observable<Competencia> {
+    return this.http.put<Competencia>(`${this.apiUrl}/${competenciaId}`, competencia);
   }
 
   excluir(competenciaId: number) {

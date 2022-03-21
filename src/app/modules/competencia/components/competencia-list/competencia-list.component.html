@@ -3,7 +3,7 @@
         <h2>Listagem de Competências</h2>
         <span class="col"></span>
         <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Nova Competência"
-            (click)="showModal()"></button>
+            (click)="novaCompetencia()"></button>
     </div>
     <p-table [value]="competencias" [responsive]="true" paginator="true" rows="10">
         <ng-template pTemplate="header">
@@ -21,7 +21,7 @@
                 <td>{{competencia.categoria.nome}}</td>
                 <td style="text-align: center">
                     <button pButton pRipple type="button" class="p-button-raised" icon="ui-icon-pencil"
-                        (click)="navegar(competencia.id)"></button>
+                        (click)="editarCompetencia(competencia)"></button>
                     <button pButton type="button" class="p-button-raised ui-button-danger" icon="ui-icon-trash"
                         (click)="excluir(competencia)"></button>
                 </td>
@@ -30,13 +30,16 @@
     </p-table>
 </p-card>
 
-<p-dialog header="Competência" [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}"
-    [draggable]="false">
-    <app-competencia-form *ngIf="displayModal" [competencia]=""></app-competencia-form>
-    <p-footer>
-        <div>
-            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left" class="p-button-secondary"></button>
-            <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left" class="p-button-secondary"></button>
-        </div>
-    </p-footer>
+<p-dialog header="Competência" [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}" [draggable]="false">
+
+        <app-competencia-form *ngIf="displayModal" [competencia]="competencia" (onSubmit)="salvarCompetencia($event)">
+        </app-competencia-form>
+        <p-footer>
+            <div>
+                <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
+                    class="ui-button-secondary" (click)="compForm?.submit()"></button>
+                <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
+                    class="ui-button-secondary" (click)="fecharModal()"></button>
+            </div>
+        </p-footer>
 </p-dialog>
