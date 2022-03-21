@@ -1,4 +1,4 @@
-import { CompetenciaResumoDto } from "./competencia-resumo-dto.model";
+import { CompetenciaNivel } from "./competencia-nivel.model";
 import { Senioridade } from "./senioridade.model";
 
 export interface Colaborador {
@@ -10,5 +10,5 @@ export interface Colaborador {
     dataNascimento: Date;
     dataAdmissao: Date;
     senioridade: Senioridade;
-    competencias: CompetenciaResumoDto[];
+    competencias: CompetenciaNivel[];
 }

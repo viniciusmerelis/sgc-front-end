@@ -1,8 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PageNotificationService } from '@nuvem/primeng-components';
+import { SelectItem } from 'primeng';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Competencia } from 'src/app/modules/competencia/models/competencia.model';
 import { CompetenciaService } from 'src/app/modules/competencia/service/competencia.service';
+import { ColaboradorDto } from '../../models/colaborador-dto.model';
+import { Colaborador } from '../../models/colaborador.model';
+import { CompetenciaNivel } from '../../models/competencia-nivel.model';
+import { Nivel } from '../../models/nivel.model';
 import { Senioridade } from '../../models/senioridade.model';
+import { ColaboradorService } from '../../service/colaborador.service';
 import { SenioridadeService } from '../../service/senioridade.service';
 
 @Component({
@@ -10,22 +21,65 @@ import { SenioridadeService } from '../../service/senioridade.service';
     templateUrl: './colaborador-form.component.html',
     styleUrls: ['./colaborador-form.component.css']
 })
-export class ColaboradorFormComponent implements OnInit {
+export class ColaboradorFormComponent implements OnInit, OnDestroy {
 
+    unsubscribeAll = new Subject<void>();
     senioridades: Senioridade[] = [];
     competencias: Competencia[] = [];
     colaboradorForm: FormGroup;
     competenciasForm: FormGroup;
+    niveis: SelectItem[];
 
     constructor(
+        private colaboradorService: ColaboradorService,
         private senioridadeService: SenioridadeService,
-        private competenicaService: CompetenciaService
+        private competenicaService: CompetenciaService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private messageService: PageNotificationService,
     ) { }
 
     ngOnInit() {
         this.listarSenioridades();
         this.listarCompetencias();
         this.criarColaboradorForm();
+        this.niveis = Nivel.selectItem;
+        this.criarCompetenciasForm();
+        this.route.paramMap
+            .pipe(takeUntil(this.unsubscribeAll))
+            .subscribe(
+                params => {
+                    const param = params.get('param');
+                    if (param === 'criar') {
+                        this.colaboradorForm.setValue({
+                            id: null,
+                            nome: null,
+                            sobrenome: null,
+                            cpf: null,
+                            email: null,
+                            dataNascimento: null,
+                            dataAdmissao: null,
+                            senioridade: null,
+                            competencias: []
+                        })
+                    } else {
+                        this.colaboradorService.buscarPeloId(+param).subscribe(
+                            colaborador => {
+                                colaborador.dataNascimento = new Date(colaborador.dataNascimento);
+                                colaborador.dataAdmissao = new Date(colaborador.dataAdmissao);
+                                this.colaboradorForm.patchValue(colaborador);
+                                this.colaboradorForm.markAsPristine();
+                                this.colaboradorForm.markAsUntouched();
+                            }
+                        )
+                    }
+                }
+            )
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeAll.next();
+        this.unsubscribeAll.complete();
     }
 
     criarColaboradorForm() {
@@ -33,7 +87,7 @@ export class ColaboradorFormComponent implements OnInit {
             id: new FormControl(),
             nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
             sobrenome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
-            cpf: new FormControl(null, [Validators.required, Validators.maxLength(11)]),
+            cpf: new FormControl(null, [Validators.required, Validators.maxLength(11), Validators.minLength(11)]),
             email: new FormControl(null, Validators.required),
             dataNascimento: new FormControl(null, Validators.required),
             dataAdmissao: new FormControl(null, Validators.required),
@@ -44,8 +98,74 @@ export class ColaboradorFormComponent implements OnInit {
 
     criarCompetenciasForm() {
         this.competenciasForm = new FormGroup({
+            competencia: new FormControl(null),
+            nivel: new FormControl(null)
+        });
+    }
 
-        })
+    submitForm() {
+        if (!this.colaboradorForm.get('id').value) {
+            this.salvarColaborador();
+        } else {
+            this.atualizarColaborador();
+        }
+    }
+
+    salvarColaborador() {
+        const colaborador: Colaborador = this.colaboradorForm.value;
+        const colaboradorDto: ColaboradorDto = {
+            nome: colaborador.nome,
+            sobrenome: colaborador.sobrenome,
+            cpf: colaborador.cpf,
+            email: colaborador.email,
+            dataNascimento: colaborador.dataNascimento,
+            dataAdmissao: colaborador.dataAdmissao,
+            senioridadeId: colaborador.senioridade.id,
+            competencias: colaborador.competencias.map(
+                c => ({
+                    id: c.id,
+                    nivel: c.nivel
+                })
+            )
+        }
+        this.colaboradorService.salvar(colaboradorDto).subscribe(
+            c => {
+                this.colaboradorForm.markAsPristine();
+                this.competenciasForm.markAsUntouched();
+                this.irParaColaboradorList();
+                this.messageService.addCreateMsg('Colaborador criado com sucesso!');
+            }, (err: HttpErrorResponse) => {
+                this.messageService.addErrorMessage(err.error.detail, err.error.title);
+            });
+        //todo: mensagem de sucesso
+    }
+
+    atualizarColaborador() {
+        const colaborador: Colaborador = this.colaboradorForm.value;
+        const colaboradorDto: ColaboradorDto = {
+            nome: colaborador.nome,
+            sobrenome: colaborador.sobrenome,
+            cpf: colaborador.cpf,
+            email: colaborador.email,
+            dataNascimento: colaborador.dataNascimento,
+            dataAdmissao: colaborador.dataAdmissao,
+            senioridadeId: colaborador.senioridade.id,
+            competencias: colaborador.competencias.map(
+                c => ({
+                    id: c.id,
+                    nivel: c.nivel
+                })
+            )
+        }
+        this.colaboradorService.atualizar(colaborador.id, colaboradorDto).subscribe(
+            c => {
+                this.colaboradorForm.markAsPristine();
+                this.competenciasForm.markAsUntouched();
+                this.irParaColaboradorList();
+                this.messageService.addUpdateMsg('Colaborador atualizado com sucesso!');
+            }, (err: HttpErrorResponse) => {
+                this.messageService.addErrorMessage(err.error.detail, err.error.title);
+            });
     }
 
     listarSenioridades() {
@@ -58,6 +178,71 @@ export class ColaboradorFormComponent implements OnInit {
         return this.competenicaService.listar().subscribe(
             competencia => this.competencias = competencia
         );
+    }
+
+    irParaColaboradorList() {
+        this.router.navigate(['/colaboradores'], {
+            relativeTo: this.route
+        });
+    }
+
+    deveMostrarMensagemDeValidacao(control: AbstractControl): boolean {
+        return control.errors && control.touched || control.dirty;
+    }
+
+    mensagemDeValidacao(control: AbstractControl) {
+        if (control.hasError('required')) {
+            return 'Campo obrigatório.';
+        }
+        if (control.hasError('minlength')) {
+            return `O tamanho minímo é de ${control.getError('minlength').requiredLength} caracteres.`
+        }
+        return '';
+    }
+
+    adicionarCompetencias() {
+        if (this.competenciasForm.get('competencia').value == null || this.competenciasForm.get('nivel').value == null) {
+            this.messageService.addErrorMessage('Deve ser selecionda uma competência e seu nivel!');
+            return;
+        }
+        const competenciasForm: {
+            competencia: Competencia,
+            nivel: Nivel
+        } = this.competenciasForm.value;
+
+        const competencias: CompetenciaNivel = {
+            id: competenciasForm.competencia.id,
+            nome: competenciasForm.competencia.nome,
+            nivel: competenciasForm.nivel
+        }
+
+        let competenciasItens: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
+
+        if (competenciasItens.some(c => c.id == competenciasForm.competencia.id && c.nome == competenciasForm.competencia.nome)) {
+            this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');
+            return;
+        }
+
+        competenciasItens = [...competenciasItens, competencias];
+
+        this.colaboradorForm.get('competencias').setValue(competenciasItens);
+        this.competenciasForm.setValue({
+            competencia: null,
+            nivel: null
+        });
+
+        this.colaboradorForm.markAsDirty();
+    }
+
+    excluirItem(indexRow: number) {
+        let competenciaItens: CompetenciaNivel[] = [...this.colaboradorForm.get('competencias').value];
+        competenciaItens.splice(indexRow, 1);
+        this.colaboradorForm.get('competencias').setValue(competenciaItens);
+        const competencias: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
+        if (competencias.length == 0) {
+            this.messageService.addErrorMessage('Deve ser inserido ao menos uma competência a esse colaborador!');
+        }
+        this.colaboradorForm.markAsDirty();
     }
 
 }

@@ -2,7 +2,7 @@
     <div class="grid mb-3 mt-2 pl-2 pr-2 align-items-center">
         <h2>Listagem de Colaboradores</h2>
         <span class="col"></span>
-        <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Novo Colaborador"></button>
+        <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Novo Colaborador" [routerLink]="'criar'"></button>
     </div>
     <p-table [value]="colaboradores" [responsive]="true" paginator="true" rows="10">
         <ng-template pTemplate="header">
@@ -30,3 +30,4 @@
         </ng-template>
     </p-table>
 </p-card>
+<p-confirmDialog></p-confirmDialog>
