@@ -48,7 +48,7 @@ export class ColaboradorListComponent implements OnInit {
             accept: () => {
                 this.colaboradorService.excluir(colaborador.id).subscribe(() => {
                     this.colaboradores = this.colaboradores.filter(c => c.id !== colaborador.id);
-                    this.messageService.addSuccessMessage('Colaborador excluido com sucesso!');
+                    this.messageService.addDeleteMsg('Colaborador excluido com sucesso!');
                 }, (err: HttpErrorResponse) => {
                     this.messageService.addErrorMessage(err.error.detail, err.error.title)
                 });

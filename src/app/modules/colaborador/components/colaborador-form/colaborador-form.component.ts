@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageNotificationService } from '@nuvem/primeng-components';
-import { SelectItem } from 'primeng';
+import { ConfirmationService, SelectItem } from 'primeng';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Competencia } from 'src/app/modules/competencia/models/competencia.model';
@@ -37,6 +37,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         private router: Router,
         private route: ActivatedRoute,
         private messageService: PageNotificationService,
+        private confirmationDialog: ConfirmationService
     ) { }
 
     ngOnInit() {
@@ -114,35 +115,55 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     }
 
     salvarColaborador() {
-        const colaborador: Colaborador = this.colaboradorForm.value;
-        const colaboradorDto: ColaboradorDto = {
-            nome: colaborador.nome,
-            sobrenome: colaborador.sobrenome,
-            cpf: colaborador.cpf,
-            email: colaborador.email,
-            dataNascimento: colaborador.dataNascimento,
-            dataAdmissao: colaborador.dataAdmissao,
-            senioridadeId: colaborador.senioridade.id,
-            competencias: colaborador.competencias.map(
-                c => ({
-                    id: c.id,
-                    nivel: c.nivel
-                })
-            )
-        }
-        this.colaboradorService.salvar(colaboradorDto).subscribe(
-            c => {
-                this.colaboradorForm.markAsPristine();
-                this.competenciasForm.markAsUntouched();
-                this.irParaColaboradorList();
-                this.messageService.addCreateMsg('Colaborador criado com sucesso!');
-            }, (err: HttpErrorResponse) => {
-                this.messageService.addErrorMessage(err.error.detail, err.error.title);
-            });
+        this.confirmationDialog.confirm({
+            header: 'Confirmar Salvamento',
+            message: 'Deseja realmente criar esse colaborador?',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                const colaboradorDto = this.colaboradorToColaboradorDto(this.colaboradorForm.value);
+                this.colaboradorService.salvar(colaboradorDto).subscribe(
+                    c => {
+                        this.colaboradorForm.markAsPristine();
+                        this.competenciasForm.markAsUntouched();
+                        this.irParaColaboradorList();
+                        this.messageService.addCreateMsg('Colaborador criado com sucesso!');
+                    }, (err: HttpErrorResponse) => {
+                        this.messageService.addErrorMessage(err.error.detail, err.error.title);
+                    });
+            },
+            reject: () => {
+                this.confirmationDialog.close();
+            }
+        });
     }
 
     atualizarColaborador() {
-        const colaborador: Colaborador = this.colaboradorForm.value;
+        this.confirmationDialog.confirm({
+            header: 'Confirmar Edição',
+            message: 'Deseja realmente atualizar esse colaborador?',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                const colaborador: Colaborador = this.colaboradorForm.value;
+                const colaboradorDto = this.colaboradorToColaboradorDto(this.colaboradorForm.value);
+                this.colaboradorService.atualizar(colaborador.id, colaboradorDto).subscribe(
+                    c => {
+                        this.colaboradorForm.markAsPristine();
+                        this.competenciasForm.markAsUntouched();
+                        this.irParaColaboradorList();
+                        this.messageService.addUpdateMsg('Colaborador atualizado com sucesso!');
+                    }, (err: HttpErrorResponse) => {
+                        this.messageService.addErrorMessage(err.error.detail, err.error.title);
+                    });
+            },
+            reject: () => {
+                this.confirmationDialog.close();
+            }
+        });
+    }
+
+    colaboradorToColaboradorDto(colaborador: Colaborador) {
         const colaboradorDto: ColaboradorDto = {
             nome: colaborador.nome,
             sobrenome: colaborador.sobrenome,
@@ -158,15 +179,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
                 })
             )
         }
-        this.colaboradorService.atualizar(colaborador.id, colaboradorDto).subscribe(
-            c => {
-                this.colaboradorForm.markAsPristine();
-                this.competenciasForm.markAsUntouched();
-                this.irParaColaboradorList();
-                this.messageService.addUpdateMsg('Colaborador atualizado com sucesso!');
-            }, (err: HttpErrorResponse) => {
-                this.messageService.addErrorMessage(err.error.detail, err.error.title);
-            });
+        return colaboradorDto;
     }
 
     listarSenioridades() {
@@ -182,9 +195,30 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     }
 
     irParaColaboradorList() {
-        this.router.navigate(['/colaboradores'], {
-            relativeTo: this.route
-        });
+        if (this.podeVoltarParaColaboradorList()) {
+            this.router.navigate(['/colaboradores'], {
+                relativeTo: this.route
+            });
+        } else {
+            this.confirmationDialog.confirm({
+                header: 'Confirmar Ação',
+                message: 'Deseja realmente voltar para listagem de colaboradores? As informação preenchidas ou modificadas serão perdidas.',
+                acceptLabel: 'Sim',
+                rejectLabel: 'Não',
+                accept: () => {
+                    this.router.navigate(['/colaboradores'], {
+                        relativeTo: this.route
+                    });
+                },
+                reject: () => {
+                    this.confirmationDialog.close();
+                }
+            })
+        }
+    }
+
+    podeVoltarParaColaboradorList(): boolean {
+        return this.colaboradorForm.pristine;
     }
 
     deveMostrarMensagemDeValidacao(control: AbstractControl): boolean {
@@ -216,22 +250,18 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             nome: competenciasForm.competencia.nome,
             nivel: competenciasForm.nivel
         }
-
         let competenciasItens: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
 
         if (competenciasItens.some(c => c.id == competenciasForm.competencia.id && c.nome == competenciasForm.competencia.nome)) {
             this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');
             return;
         }
-
         competenciasItens = [...competenciasItens, competencias];
-
         this.colaboradorForm.get('competencias').setValue(competenciasItens);
         this.competenciasForm.setValue({
             competencia: null,
             nivel: null
         });
-
         this.colaboradorForm.markAsDirty();
     }
 
@@ -239,7 +269,6 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         let competenciaItens: CompetenciaNivel[] = [...this.colaboradorForm.get('competencias').value];
         competenciaItens.splice(indexRow, 1);
         this.colaboradorForm.get('competencias').setValue(competenciaItens);
-        // const competencias: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
         if (competenciaItens.length == 0) {
             this.messageService.addErrorMessage('Deve ser inserido ao menos uma competência a esse colaborador!');
             return;

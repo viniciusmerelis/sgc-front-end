@@ -16,13 +16,14 @@
         </ng-template>
         <ng-template pTemplate="body" let-colaborador>
             <tr>
-                <td>{{colaborador.nome}} {{colaborador.sobrenome}}</td>
-                <td>{{colaborador.email}}</td>
-                <td>{{colaborador.dataNascimento | date: 'dd/MM/yyyy'}}</td>
-                <td>{{colaborador.senioridade.nome}}</td>
+                <td class="text-center">{{colaborador.nome}} {{colaborador.sobrenome}}</td>
+                <td class="text-center">{{colaborador.email}}</td>
+                <td class="text-center">{{colaborador.dataNascimento | date: 'dd/MM/yyyy'}}</td>
+                <td class="text-center">{{colaborador.senioridade.nome}}</td>
                 <td style="text-align: center">
                     <button pButton pRipple type="button" class="p-button-raised" icon="ui-icon-pencil"
                         (click)="editar(colaborador.id)"></button>
+                        <span class="pr-1"></span>
                     <button pButton type="button" class="p-button-raised ui-button-danger" icon="ui-icon-trash"
                         (click)="excluir(colaborador)"></button>
                 </td>
