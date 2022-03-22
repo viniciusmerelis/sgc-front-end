@@ -11,7 +11,7 @@ import { CompetenciaService } from 'src/app/modules/competencia/service/competen
 import { ColaboradorDto } from '../../models/colaborador-dto.model';
 import { Colaborador } from '../../models/colaborador.model';
 import { CompetenciaNivel } from '../../models/competencia-nivel.model';
-import { Nivel } from '../../models/nivel.model';
+import { Nivel, NivelUtil } from '../../models/nivel.model';
 import { Senioridade } from '../../models/senioridade.model';
 import { ColaboradorService } from '../../service/colaborador.service';
 import { SenioridadeService } from '../../service/senioridade.service';
@@ -43,7 +43,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         this.listarSenioridades();
         this.listarCompetencias();
         this.criarColaboradorForm();
-        this.niveis = Nivel.selectItem;
+        this.niveis = NivelUtil.selectItems;
         this.criarCompetenciasForm();
         this.route.paramMap
             .pipe(takeUntil(this.unsubscribeAll))
@@ -81,6 +81,8 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         this.unsubscribeAll.next();
         this.unsubscribeAll.complete();
     }
+
+    nivelToLabel = NivelUtil.getLabel
 
     criarColaboradorForm() {
         this.colaboradorForm = new FormGroup({
@@ -137,7 +139,6 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             }, (err: HttpErrorResponse) => {
                 this.messageService.addErrorMessage(err.error.detail, err.error.title);
             });
-        //todo: mensagem de sucesso
     }
 
     atualizarColaborador() {
@@ -238,9 +239,10 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         let competenciaItens: CompetenciaNivel[] = [...this.colaboradorForm.get('competencias').value];
         competenciaItens.splice(indexRow, 1);
         this.colaboradorForm.get('competencias').setValue(competenciaItens);
-        const competencias: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
-        if (competencias.length == 0) {
+        // const competencias: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
+        if (competenciaItens.length == 0) {
             this.messageService.addErrorMessage('Deve ser inserido ao menos uma competência a esse colaborador!');
+            return;
         }
         this.colaboradorForm.markAsDirty();
     }
