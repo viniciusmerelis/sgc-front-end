@@ -23,15 +23,15 @@ export class TurmaFormacaoService {
         return this.http.get<Turma>(`${this.apiUrl}/${turmaId}`);
     }
 
-    save(turmaDto: TurmaDto): Observable<Turma> {
+    salvar(turmaDto: TurmaDto): Observable<Turma> {
         return this.http.post<Turma>(this.apiUrl, turmaDto);
     }
 
-    update(id: number, turmaDto: TurmaDto): Observable<Turma> {
+    atualizar(id: number, turmaDto: TurmaDto): Observable<Turma> {
         return this.http.put<Turma>(`${this.apiUrl}/${id}`, turmaDto);
     }
 
-    delete(id: number) {
+    excluir(id: number) {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }
 }

@@ -98,7 +98,7 @@ export class CompetenciaListComponent implements OnInit {
             accept: () => {
                 this.competenciaService.excluir(competencia.id).subscribe(() => {
                     this.competencias = this.competencias.filter(c => c.id !== competencia.id)
-                    this.messageService.addSuccessMessage('Competência excluida com sucesso!');
+                    this.messageService.addDeleteMsg('Competência excluida com sucesso!');
                 }, (err: HttpErrorResponse) => {
                     this.messageService.addErrorMessage(err.error.detail, err.error.title);
                 });

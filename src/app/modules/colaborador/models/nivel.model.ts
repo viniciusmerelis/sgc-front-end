@@ -10,14 +10,8 @@ export class NivelUtil {
 
     static selectItems: SelectItem[] = [
         { value: Nivel.CONHECE, label: 'Conhece' },
-        {
-            value: Nivel.SABE_APLICAR,
-            label: 'Sabe Aplicar'
-        },
-        {
-            value: Nivel.SABE_ENSINAR,
-            label: 'Sabe Ensinar'
-        }
+        { value: Nivel.SABE_APLICAR, label: 'Sabe Aplicar' },
+        { value: Nivel.SABE_ENSINAR, label: 'Sabe Ensinar' }
     ];
 
     static getLabel(nivel: Nivel): string {

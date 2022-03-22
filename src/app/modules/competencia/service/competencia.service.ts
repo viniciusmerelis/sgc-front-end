@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CompetenciaColaboradoresNivelMaximo } from '../../turma-formacao/models/competencia-colaboradores-nivel-maximo.model';
 import { CompetenciaDto } from '../models/competencia-dto.model';
 import { Competencia } from '../models/competencia.model';
 
@@ -34,4 +35,8 @@ export class CompetenciaService {
   excluir(competenciaId: number) {
     return this.http.delete(`${this.apiUrl}/${competenciaId}`);
   }
+
+  buscarCompetenciasColaboradoresNivelMaximo(): Observable<CompetenciaColaboradoresNivelMaximo[]> {
+    return this.http.get<CompetenciaColaboradoresNivelMaximo[]>(`${this.apiUrl}/?colaboradores=nivel-maximo`)
+}
 }
