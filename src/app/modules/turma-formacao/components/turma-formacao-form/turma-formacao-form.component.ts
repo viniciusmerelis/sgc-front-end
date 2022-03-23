@@ -257,8 +257,6 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
       colaborador: ColaboradorResumo
     } = this.competenciaColaboradorForm.value;
 
-    console.log(competenciaColaboradorForm)
-
     const competenciaColaborador: CompetenciaColaborador = {
       competencia: competenciaColaboradorForm.competencia.competencia,
       colaborador: competenciaColaboradorForm.colaborador
