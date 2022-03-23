@@ -29,6 +29,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     colaboradorForm: FormGroup;
     competenciasForm: FormGroup;
     niveis: SelectItem[];
+    nivelToLabel = NivelUtil.getLabel;
 
     constructor(
         private colaboradorService: ColaboradorService,
@@ -82,8 +83,6 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         this.unsubscribeAll.next();
         this.unsubscribeAll.complete();
     }
-
-    nivelToLabel = NivelUtil.getLabel
 
     criarColaboradorForm() {
         this.colaboradorForm = new FormGroup({
@@ -256,7 +255,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');
             return;
         }
-        competenciasItens = [...competenciasItens, competencias];
+        competenciasItens.push(competencias);
         this.colaboradorForm.get('competencias').setValue(competenciasItens);
         this.competenciasForm.setValue({
             competencia: null,
