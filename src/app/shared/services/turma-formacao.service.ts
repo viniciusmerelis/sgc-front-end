@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TurmaDto } from '../models/turma-dto.model';
-import { Turma } from '../models/turma.model';
+import { TurmaDto } from 'src/app/domain/turma-formacao/turma-dto.model';
+import { Turma } from 'src/app/domain/turma-formacao/turma.model';
+
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class TurmaFormacaoService {
 
-  private apiUrl: string;
+    private apiUrl: string;
 
     constructor(private http: HttpClient) {
         this.apiUrl = '/api/turmas';

@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CompetenciaColaboradoresNivelMaximo } from '../../turma-formacao/models/competencia-colaboradores-nivel-maximo.model';
-import { CompetenciaDto } from '../models/competencia-dto.model';
-import { Competencia } from '../models/competencia.model';
+import { CompetenciaDto } from 'src/app/domain/competencia/competencia-dto.model';
+import { Competencia } from 'src/app/domain/competencia/competencia.model';
+import { CompetenciaColaboradoresNivelMaximo } from 'src/app/domain/turma-formacao/competencia-colaboradores-nivel-maximo.model';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +40,5 @@ export class CompetenciaService {
 
   buscarCompetenciasColaboradoresNivelMaximo(): Observable<CompetenciaColaboradoresNivelMaximo[]> {
     return this.http.get<CompetenciaColaboradoresNivelMaximo[]>(`${this.apiUrl}/?colaboradores=nivel-maximo`)
-}
+  }
 }

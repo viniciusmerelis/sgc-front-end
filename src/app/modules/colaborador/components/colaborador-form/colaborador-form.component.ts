@@ -6,15 +6,19 @@ import { PageNotificationService } from '@nuvem/primeng-components';
 import { ConfirmationService, SelectItem } from 'primeng';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Competencia } from 'src/app/modules/competencia/models/competencia.model';
-import { CompetenciaService } from 'src/app/modules/competencia/service/competencia.service';
-import { ColaboradorDto } from '../../models/colaborador-dto.model';
-import { Colaborador } from '../../models/colaborador.model';
-import { CompetenciaNivel } from '../../models/competencia-nivel.model';
-import { Nivel, NivelUtil } from '../../models/nivel.model';
-import { Senioridade } from '../../models/senioridade.model';
-import { ColaboradorService } from '../../service/colaborador.service';
-import { SenioridadeService } from '../../service/senioridade.service';
+import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
+import { CompetenciaNivel } from 'src/app/domain/colaborador/competencia-nivel.model';
+import { Nivel, NivelUtil } from 'src/app/domain/colaborador/nivel.enum';
+import { Senioridade } from 'src/app/domain/colaborador/senioridade.model';
+import { Competencia } from 'src/app/domain/competencia/competencia.model';
+import { CompetenciaService } from 'src/app/shared/services/competencia.service';
+import { SenioridadeService } from 'src/app/shared/services/senioridade.service';
+import { ColaboradorDto } from '../../../../domain/colaborador/colaborador-dto.model';
+import { ColaboradorService } from '../../../../shared/services/colaborador.service';
+
+
+
+
 
 @Component({
     selector: 'app-colaborador-form',

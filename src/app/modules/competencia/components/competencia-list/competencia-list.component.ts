@@ -3,10 +3,11 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { PageNotificationService } from '@nuvem/primeng-components';
 import { BlockUIService } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng';
-import { CompetenciaDto } from '../../models/competencia-dto.model';
-import { Competencia } from '../../models/competencia.model';
-import { CompetenciaService } from '../../service/competencia.service';
+import { CompetenciaDto } from 'src/app/domain/competencia/competencia-dto.model';
+import { Competencia } from 'src/app/domain/competencia/competencia.model';
+import { CompetenciaService } from 'src/app/shared/services/competencia.service';
 import { CompetenciaFormComponent } from '../competencia-form/competencia-form.component';
+
 
 @Component({
     selector: 'app-competencia-list',
