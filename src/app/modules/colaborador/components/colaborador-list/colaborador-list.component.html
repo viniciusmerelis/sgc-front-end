@@ -4,14 +4,14 @@
         <span class="col"></span>
         <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Novo Colaborador" [routerLink]="'criar'"></button>
     </div>
-    <p-table [value]="colaboradores" [responsive]="true" paginator="true" rows="10">
+    <p-table [value]="colaboradores" [responsive]="true" [scrollable]="true" scrollHeight="300px">
         <ng-template pTemplate="header">
             <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Data de Nascimento</th>
-                <th>Senioridade</th>
-                <th [ngStyle]="{'width': '125px'}">Ações</th>
+                <th [ngStyle]="{'width': '125px'}">Nome</th>
+                <th [ngStyle]="{'width': '125px'}">Email</th>
+                <th [ngStyle]="{'width': '125px'}">Data de Nascimento</th>
+                <th [ngStyle]="{'width': '125px'}">Senioridade</th>
+                <th [ngStyle]="{'width': '125px'}" [ngStyle]="{'width': '125px'}">Ações</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-colaborador>

@@ -4,8 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PageNotificationService } from '@nuvem/primeng-components';
 import { BlockUIService } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng';
-import { Colaborador } from '../../models/colaborador.model';
-import { ColaboradorService } from '../../service/colaborador.service';
+import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
+import { ColaboradorService } from '../../../../shared/services/colaborador.service';
+
 
 @Component({
     selector: 'app-colaborador-list',

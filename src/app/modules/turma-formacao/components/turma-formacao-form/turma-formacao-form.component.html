@@ -29,7 +29,8 @@
 
                 <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
                     <span class="ui-float-label">
-                        <p-calendar dateFormat="dd/mm/yy" formControlName="dataInicio"></p-calendar>
+                        <p-calendar dateFormat="dd/mm/yy" (onSelect)="limparDataTermino()" [yearNavigator]="true"
+                            yearRange="2022:2050" formControlName="dataInicio"></p-calendar>
                         <label for="float-input">Data Inicio</label>
                     </span>
                     <small *ngIf="deveMostrarMensagemDeValidacao(turmaForm.get('dataInicio'))" class="p-invalid"
@@ -90,11 +91,11 @@
                     </div>
 
                     <p-table [value]="turmaForm.get('competenciasColaboradores').value" [responsive]="true"
-                        paginator="true" rows="3" class="mt-5">
+                        [scrollable]="true" scrollHeight="150px" class="mt-5">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th>Competencia</th>
-                                <th>Colaborador</th>
+                                <th [ngStyle]="{'width': '125px'}">Competencia</th>
+                                <th [ngStyle]="{'width': '125px'}">Colaborador</th>
                                 <th [ngStyle]="{'width': '125px'}">Ações</th>
                             </tr>
                         </ng-template>

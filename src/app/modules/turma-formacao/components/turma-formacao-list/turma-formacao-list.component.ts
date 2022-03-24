@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PageNotificationService } from '@nuvem/primeng-components';
 import { ConfirmationService } from 'primeng';
-import { Turma } from '../../models/turma.model';
-import { TurmaFormacaoService } from '../../service/turma-formacao.service';
+import { Turma } from 'src/app/domain/turma-formacao/turma.model';
+import { TurmaFormacaoService } from 'src/app/shared/services/turma-formacao.service';
+
+
 
 @Component({
   selector: 'app-turma-formacao-list',

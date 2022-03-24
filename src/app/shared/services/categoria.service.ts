@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SelectItem } from 'primeng';
 import { Observable } from 'rxjs';
-import { Categoria } from '../models/categoria.model';
+import { Categoria } from 'src/app/domain/competencia/categoria.model';
+
 
 @Injectable({
   providedIn: 'root'

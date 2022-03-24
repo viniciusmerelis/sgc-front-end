@@ -27,7 +27,8 @@
                 </div>
                 <div class="col-12 mt-3 sm:col-2 md:col-2">
                     <span class="ui-float-label">
-                        <input id="float-input" type="text" pInputText autocomplete="off" formControlName="cpf">
+                        <p-inputMask id="float-input" type="text" autocomplete="off" mask="999.999.999-99"
+                            [autoClear]="true" formControlName="cpf" [unmask]="true"></p-inputMask>
                         <label for="float-input">CPF</label>
                     </span>
                     <small *ngIf="deveMostrarMensagemDeValidacao(colaboradorForm.get('cpf'))" class="p-invalid"
@@ -43,7 +44,8 @@
                 </div>
                 <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
                     <span class="ui-float-label">
-                        <p-calendar dateFormat="dd/mm/yy" formControlName="dataNascimento"></p-calendar>
+                        <p-calendar dateFormat="dd/mm/yy" [yearNavigator]="true" yearRange="1950:2022"
+                            formControlName="dataNascimento"></p-calendar>
                         <label for="float-input">Data Nascimento</label>
                     </span>
                     <small *ngIf="deveMostrarMensagemDeValidacao(colaboradorForm.get('dataNascimento'))"
@@ -52,7 +54,8 @@
                 </div>
                 <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
                     <span class="ui-float-label">
-                        <p-calendar dateFormat="dd/mm/yy" formControlName="dataAdmissao"></p-calendar>
+                        <p-calendar dateFormat="dd/mm/yy" [yearNavigator]="true" yearRange="1950:2022"
+                            formControlName="dataAdmissao"></p-calendar>
                         <label for="float-input">Data Admissão</label>
                     </span>
                     <small *ngIf="deveMostrarMensagemDeValidacao(colaboradorForm.get('dataAdmissao'))" class="p-invalid"
@@ -103,12 +106,12 @@
                         <button type="button" icon="ui-icon-plus" pButton (click)="adicionarCompetencias()"></button>
                     </div>
 
-                    <p-table [value]="colaboradorForm.get('competencias').value" [responsive]="true" paginator="true"
-                        rows="3" class="mt-5">
+                    <p-table [value]="colaboradorForm.get('competencias').value" [responsive]="true"
+                        [scrollable]="true" scrollHeight="150px" class="mt-5">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th>Competencia</th>
-                                <th>Nivel</th>
+                                <th [ngStyle]="{'width': '125px'}">Competencia</th>
+                                <th [ngStyle]="{'width': '125px'}">Nivel</th>
                                 <th [ngStyle]="{'width': '125px'}">Ações</th>
                             </tr>
                         </ng-template>
