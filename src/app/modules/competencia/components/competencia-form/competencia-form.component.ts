@@ -24,16 +24,7 @@ export class CompetenciaFormComponent implements OnInit {
   ngOnInit() {
     this.listarCategorias();
     this.criarCompetenciaForm();
-    if (this.competencia == undefined) {
-      this.competenciaForm.setValue({
-        id: null,
-        nome: null,
-        descricao: null,
-        categoria: null
-      })
-    } else {
-      this.competenciaForm.setValue(this.competencia);
-    }
+    this.definirCompetenciaForm();
   }
 
   criarCompetenciaForm() {
@@ -43,6 +34,19 @@ export class CompetenciaFormComponent implements OnInit {
       descricao: new FormControl(null, [Validators.required, Validators.minLength(5)]),
       categoria: new FormControl(null, Validators.required)
     });
+  }
+
+  definirCompetenciaForm() {
+    if (this.competencia == undefined) {
+      this.competenciaForm.setValue({
+        id: null,
+        nome: null,
+        descricao: null,
+        categoria: null
+      });
+    } else {
+      this.competenciaForm.setValue(this.competencia);
+    }
   }
 
   listarCategorias() {
