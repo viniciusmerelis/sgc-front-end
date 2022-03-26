@@ -47,36 +47,7 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
     this.buscarCompetenciasColaboradoresNivelMaximo();
     this.criarTurmaForm();
     this.criarCompetenciaColaboradorForm();
-    this.route.paramMap
-      .pipe(takeUntil(this.unsubscribeAll))
-      .subscribe(
-        params => {
-          const param = params.get('param');
-          if (param === 'criar') {
-            this.turmaForm.setValue({
-              id: null,
-              nome: null,
-              descricao: null,
-              dataInicio: null,
-              dataTermino: null,
-              status: null,
-              competenciasColaboradores: []
-            });
-            this.turmaForm.markAsPristine();
-            this.turmaForm.markAsUntouched();
-          } else {
-            this.turmaService.buscarPeloId(+param).subscribe(
-              turma => {
-                turma.dataInicio = new Date(turma.dataInicio);
-                turma.dataTermino = new Date(turma.dataTermino);
-                this.turmaForm.patchValue(turma);
-                this.turmaForm.markAsPristine()
-                this.turmaForm.markAsUntouched();
-              }
-            );
-          }
-        }
-      );
+    this.definirTurmaForm();
   }
 
   ngOnDestroy() {
@@ -117,6 +88,39 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
           return this.colaboradores = null;
         }
       });
+  }
+
+  definirTurmaForm() {
+    this.route.paramMap
+      .pipe(takeUntil(this.unsubscribeAll))
+      .subscribe(
+        params => {
+          const param = params.get('param');
+          if (param === 'criar') {
+            this.turmaForm.setValue({
+              id: null,
+              nome: null,
+              descricao: null,
+              dataInicio: null,
+              dataTermino: null,
+              status: null,
+              competenciasColaboradores: []
+            });
+            this.turmaForm.markAsPristine();
+            this.turmaForm.markAsUntouched();
+          } else {
+            this.turmaService.buscarPeloId(+param).subscribe(
+              turma => {
+                turma.dataInicio = new Date(turma.dataInicio);
+                turma.dataTermino = new Date(turma.dataTermino);
+                this.turmaForm.patchValue(turma);
+                this.turmaForm.markAsPristine()
+                this.turmaForm.markAsUntouched();
+              }
+            );
+          }
+        }
+      );
   }
 
   submitForm() {

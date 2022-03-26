@@ -18,8 +18,6 @@ import { ColaboradorService } from '../../../../shared/services/colaborador.serv
 
 
 
-
-
 @Component({
     selector: 'app-colaborador-form',
     templateUrl: './colaborador-form.component.html',
@@ -46,11 +44,41 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        this.niveis = NivelUtil.selectItems;
         this.listarSenioridades();
         this.listarCompetencias();
         this.criarColaboradorForm();
-        this.niveis = NivelUtil.selectItems;
         this.criarCompetenciasForm();
+        this.definirColaboradorForm();
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeAll.next();
+        this.unsubscribeAll.complete();
+    }
+
+    criarColaboradorForm() {
+        this.colaboradorForm = new FormGroup({
+            id: new FormControl(),
+            nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
+            sobrenome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
+            cpf: new FormControl(null, [Validators.required, Validators.maxLength(11), Validators.minLength(11)]),
+            email: new FormControl(null, Validators.required),
+            dataNascimento: new FormControl(null, Validators.required),
+            dataAdmissao: new FormControl(null, Validators.required),
+            senioridade: new FormControl(null, Validators.required),
+            competencias: new FormControl(null, Validators.required)
+        })
+    }
+
+    criarCompetenciasForm() {
+        this.competenciasForm = new FormGroup({
+            competencia: new FormControl(null),
+            nivel: new FormControl(null)
+        });
+    }
+
+    definirColaboradorForm() {
         this.route.paramMap
             .pipe(takeUntil(this.unsubscribeAll))
             .subscribe(
@@ -81,32 +109,6 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
                     }
                 }
             )
-    }
-
-    ngOnDestroy() {
-        this.unsubscribeAll.next();
-        this.unsubscribeAll.complete();
-    }
-
-    criarColaboradorForm() {
-        this.colaboradorForm = new FormGroup({
-            id: new FormControl(),
-            nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
-            sobrenome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
-            cpf: new FormControl(null, [Validators.required, Validators.maxLength(11), Validators.minLength(11)]),
-            email: new FormControl(null, Validators.required),
-            dataNascimento: new FormControl(null, Validators.required),
-            dataAdmissao: new FormControl(null, Validators.required),
-            senioridade: new FormControl(null, Validators.required),
-            competencias: new FormControl(null, Validators.required)
-        })
-    }
-
-    criarCompetenciasForm() {
-        this.competenciasForm = new FormGroup({
-            competencia: new FormControl(null),
-            nivel: new FormControl(null)
-        });
     }
 
     submitForm() {
