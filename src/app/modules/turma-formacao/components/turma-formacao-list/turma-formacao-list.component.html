@@ -5,14 +5,14 @@
         <button pButton type="button" icon="ui-icon-plus" class="ui-button-success" iconPos="left" label="Nova Turma"
             [routerLink]="'criar'"></button>
     </div>
-    <p-table [value]="turmas" [responsive]="true" paginator="true" rows="5">
+    <p-table [value]="turmas" [responsive]="true" [scrollable]="true" scrollHeight="250px">
         <ng-template pTemplate="header">
             <tr>
-                <th>Nome</th>
-                <th>Descrição</th>
-                <th>Data Inicio</th>
-                <th>Data Termino</th>
-                <th>Status</th>
+                <th [ngStyle]="{'width': '120px'}">Nome</th>
+                <th [ngStyle]="{'width': '120px'}">Descrição</th>
+                <th [ngStyle]="{'width': '120px'}">Data Inicio</th>
+                <th [ngStyle]="{'width': '120px'}">Data Termino</th>
+                <th [ngStyle]="{'width': '120px'}">Status</th>
                 <th [ngStyle]="{'width': '120px'}">Ações</th>
             </tr>
         </ng-template>

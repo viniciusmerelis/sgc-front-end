@@ -1,8 +1,9 @@
 <form [formGroup]="competenciaForm" (submit)="submit()">
+    <p-fieldset legend="Competência">
     <div class="grid mb-2 mt-3 pl-2 pr-2">
         <div class="col-12 sm:col-6 md:col-6">
             <span class="ui-float-label">
-                <input id="float-input" type="text" pInputText formControlName="nome" (focus)="true"/>
+                <input id="float-input" type="text" pInputText autocomplete="off" formControlName="nome"/>
                 <label for="float-input">Nome da Competência</label>
             </span>
             <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('nome'))" class="p-invalid"
@@ -27,4 +28,5 @@
                 style="color: red;">{{mensagemDeValidacao(competenciaForm.get('descricao'))}}</small>
         </div>
     </div>
+</p-fieldset>
 </form>

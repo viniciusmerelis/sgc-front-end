@@ -5,12 +5,12 @@
         <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Nova Competência"
             (click)="novaCompetencia()"></button>
     </div>
-    <p-table [value]="competencias" [responsive]="true" paginator="true" rows="10">
+    <p-table [value]="competencias" [responsive]="true" [scrollable]="true" scrollHeight="350px">
         <ng-template pTemplate="header">
             <tr>
-                <th>Nome</th>
-                <th>Descrição</th>
-                <th>Categoria</th>
+                <th [ngStyle]="{'width': '125px'}">Nome</th>
+                <th [ngStyle]="{'width': '125px'}">Descrição</th>
+                <th [ngStyle]="{'width': '125px'}">Categoria</th>
                 <th [ngStyle]="{'width': '125px'}">Ações</th>
             </tr>
         </ng-template>
@@ -31,12 +31,12 @@
     </p-table>
 </p-card>
 
-<p-dialog header="Competência" [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}" [draggable]="false">
-    <app-competencia-form *ngIf="displayModal" [competencia]="competencia" (onSubmit)="salvarCompetencia($event)">
+<p-dialog [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}" [draggable]="false">
+    <app-competencia-form *ngIf="displayModal" [competencia]="competencia" (onSubmit)="submitForm($event)">
     </app-competencia-form>
     <p-footer>
         <div>
-            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left" class="ui-button-success"
+            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
                 (click)="compForm?.submit()"></button>
             <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
                 class="ui-button-secondary" (click)="fecharModal()"></button>

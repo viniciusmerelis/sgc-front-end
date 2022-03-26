@@ -1,9 +1,9 @@
 import { SelectItem } from "primeng";
 
-export enum Nivel {
-    CONHECE = 'CONHECE',
-    SABE_APLICAR = 'SABE_APLICAR',
-    SABE_ENSINAR = 'SABE_ENSINAR'
+export class Nivel {
+    static CONHECE = 'CONHECE';
+    static SABE_APLICAR = 'SABE_APLICAR';
+    static SABE_ENSINAR = 'SABE_ENSINAR';
 }
 
 export class NivelUtil {

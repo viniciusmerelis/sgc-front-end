@@ -6,15 +6,17 @@ import { PageNotificationService } from '@nuvem/primeng-components';
 import { ConfirmationService, SelectItem } from 'primeng';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CompetenciaService } from 'src/app/modules/competencia/service/competencia.service';
-import { ColaboradorResumo } from '../../models/colaborador-resumo.model';
-import { CompetenciaColaborador } from '../../models/competencia-colaborador.model';
-import { CompetenciaColaboradoresNivelMaximo } from '../../models/competencia-colaboradores-nivel-maximo.model';
-import { Status } from '../../models/status.model';
-import { TurmaDto } from '../../models/turma-dto.model';
-import { Turma } from '../../models/turma.model';
-import { StatusService } from '../../service/status.service';
-import { TurmaFormacaoService } from '../../service/turma-formacao.service';
+import { ColaboradorResumo } from 'src/app/domain/turma-formacao/colaborador-resumo.model';
+import { CompetenciaColaborador } from 'src/app/domain/turma-formacao/competencia-colaborador.model';
+import { CompetenciaColaboradoresNivelMaximo } from 'src/app/domain/turma-formacao/competencia-colaboradores-nivel-maximo.model';
+import { Status } from 'src/app/domain/turma-formacao/status.model';
+import { TurmaDto } from 'src/app/domain/turma-formacao/turma-dto.model';
+import { Turma } from 'src/app/domain/turma-formacao/turma.model';
+import { CompetenciaService } from 'src/app/shared/services/competencia.service';
+import { TurmaFormacaoService } from 'src/app/shared/services/turma-formacao.service';
+import { StatusService } from '../../../../shared/services/status.service';
+
+
 
 @Component({
   selector: 'app-turma-formacao-form',
@@ -45,6 +47,50 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
     this.buscarCompetenciasColaboradoresNivelMaximo();
     this.criarTurmaForm();
     this.criarCompetenciaColaboradorForm();
+    this.definirTurmaForm();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
+  }
+
+  criarTurmaForm() {
+    this.turmaForm = new FormGroup({
+      id: new FormControl(),
+      nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
+      descricao: new FormControl(null, [Validators.required, Validators.minLength(5)]),
+      dataInicio: new FormControl(null, [Validators.required]),
+      dataTermino: new FormControl(null, [Validators.required]),
+      status: new FormControl(null, [Validators.required]),
+      competenciasColaboradores: new FormControl(null, [Validators.required])
+    });
+  }
+
+  criarCompetenciaColaboradorForm() {
+    this.competenciaColaboradorForm = new FormGroup({
+      competencia: new FormControl(null),
+      colaborador: new FormControl(null)
+    });
+    this.competenciaColaboradorForm.get('competencia')
+      .valueChanges
+      .pipe(takeUntil(this.unsubscribeAll))
+      .subscribe((valorSelecionado: CompetenciaColaboradoresNivelMaximo) => {
+        if (valorSelecionado && valorSelecionado.colaboradores) {
+          this.colaboradores = valorSelecionado.colaboradores.map(c => {
+            const item: SelectItem = {
+              label: `${c.nome} ${c.sobrenome}`,
+              value: c
+            }
+            return item;
+          });
+        } else {
+          return this.colaboradores = null;
+        }
+      });
+  }
+
+  definirTurmaForm() {
     this.route.paramMap
       .pipe(takeUntil(this.unsubscribeAll))
       .subscribe(
@@ -75,46 +121,6 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
           }
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
-  }
-
-  criarTurmaForm() {
-    this.turmaForm = new FormGroup({
-      id: new FormControl(),
-      nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
-      descricao: new FormControl(null, [Validators.required, Validators.minLength(5)]),
-      dataInicio: new FormControl(null, [Validators.required]),
-      dataTermino: new FormControl(null, [Validators.required]),
-      status: new FormControl(null, [Validators.required]),
-      competenciasColaboradores: new FormControl(null, [Validators.required])
-    })
-  }
-
-  criarCompetenciaColaboradorForm() {
-    this.competenciaColaboradorForm = new FormGroup({
-      competencia: new FormControl(null),
-      colaborador: new FormControl(null)
-    });
-    this.competenciaColaboradorForm.get('competencia')
-      .valueChanges
-      .pipe(takeUntil(this.unsubscribeAll))
-      .subscribe((valorSelecionado: CompetenciaColaboradoresNivelMaximo) => {
-        if (valorSelecionado && valorSelecionado.colaboradores) {
-          this.colaboradores = valorSelecionado.colaboradores.map(c => {
-            const item: SelectItem = {
-              label: `${c.nome} ${c.sobrenome}`,
-              value: c
-            }
-            return item;
-          });
-        } else {
-          return this.colaboradores = null;
-        }
-      });
   }
 
   submitForm() {
@@ -171,7 +177,7 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  turmaToTurmaDto(turma: Turma) {
+  turmaToTurmaDto(turma: Turma): TurmaDto {
     const turmaDto: TurmaDto = {
       nome: turma.nome,
       descricao: turma.descricao,
@@ -247,6 +253,16 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
     return '';
   }
 
+  limparDataTermino() {
+    const novaDataInicio: Date = this.turmaForm.get('dataInicio').value;
+    const dataTermino: Date = this.turmaForm.get('dataTermino').value;
+    if (novaDataInicio.getTime() > dataTermino.getTime()) {
+      this.turmaForm.get('dataTermino').setValue(null);
+      this.turmaForm.get('dataTermino').markAsTouched();
+      this.messageService.addWarnMessage('A data inicio não pode ser posterior a data termino.');
+    }
+  }
+
   adicionarCompetenciaColaborador() {
     if (this.competenciaColaboradorForm.get('competencia').value == null || this.competenciaColaboradorForm.get('colaborador').value == null) {
       this.messageService.addErrorMessage("Deve ser informado pelo menos uma competência e um colaborador.", "Falha ao inserir");
@@ -256,8 +272,6 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
       competencia: CompetenciaColaboradoresNivelMaximo,
       colaborador: ColaboradorResumo
     } = this.competenciaColaboradorForm.value;
-
-    console.log(competenciaColaboradorForm)
 
     const competenciaColaborador: CompetenciaColaborador = {
       competencia: competenciaColaboradorForm.competencia.competencia,
@@ -274,7 +288,7 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    competenciasColaboradoresItens = [...competenciasColaboradoresItens, competenciaColaborador];
+    competenciasColaboradoresItens.push(competenciaColaborador);
 
     this.turmaForm.get('competenciasColaboradores').setValue(competenciasColaboradoresItens);
     this.competenciaColaboradorForm.setValue({

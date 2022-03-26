@@ -6,15 +6,17 @@ import { PageNotificationService } from '@nuvem/primeng-components';
 import { ConfirmationService, SelectItem } from 'primeng';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Competencia } from 'src/app/modules/competencia/models/competencia.model';
-import { CompetenciaService } from 'src/app/modules/competencia/service/competencia.service';
-import { ColaboradorDto } from '../../models/colaborador-dto.model';
-import { Colaborador } from '../../models/colaborador.model';
-import { CompetenciaNivel } from '../../models/competencia-nivel.model';
-import { Nivel, NivelUtil } from '../../models/nivel.model';
-import { Senioridade } from '../../models/senioridade.model';
-import { ColaboradorService } from '../../service/colaborador.service';
-import { SenioridadeService } from '../../service/senioridade.service';
+import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
+import { CompetenciaNivel } from 'src/app/domain/colaborador/competencia-nivel.model';
+import { Nivel, NivelUtil } from 'src/app/domain/colaborador/nivel.enum';
+import { Senioridade } from 'src/app/domain/colaborador/senioridade.model';
+import { Competencia } from 'src/app/domain/competencia/competencia.model';
+import { CompetenciaService } from 'src/app/shared/services/competencia.service';
+import { SenioridadeService } from 'src/app/shared/services/senioridade.service';
+import { ColaboradorDto } from '../../../../domain/colaborador/colaborador-dto.model';
+import { ColaboradorService } from '../../../../shared/services/colaborador.service';
+
+
 
 @Component({
     selector: 'app-colaborador-form',
@@ -29,6 +31,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     colaboradorForm: FormGroup;
     competenciasForm: FormGroup;
     niveis: SelectItem[];
+    nivelToLabel = NivelUtil.getLabel;
 
     constructor(
         private colaboradorService: ColaboradorService,
@@ -41,11 +44,41 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        this.niveis = NivelUtil.selectItems;
         this.listarSenioridades();
         this.listarCompetencias();
         this.criarColaboradorForm();
-        this.niveis = NivelUtil.selectItems;
         this.criarCompetenciasForm();
+        this.definirColaboradorForm();
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeAll.next();
+        this.unsubscribeAll.complete();
+    }
+
+    criarColaboradorForm() {
+        this.colaboradorForm = new FormGroup({
+            id: new FormControl(),
+            nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
+            sobrenome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
+            cpf: new FormControl(null, [Validators.required, Validators.maxLength(11), Validators.minLength(11)]),
+            email: new FormControl(null, Validators.required),
+            dataNascimento: new FormControl(null, Validators.required),
+            dataAdmissao: new FormControl(null, Validators.required),
+            senioridade: new FormControl(null, Validators.required),
+            competencias: new FormControl(null, Validators.required)
+        })
+    }
+
+    criarCompetenciasForm() {
+        this.competenciasForm = new FormGroup({
+            competencia: new FormControl(null),
+            nivel: new FormControl(null)
+        });
+    }
+
+    definirColaboradorForm() {
         this.route.paramMap
             .pipe(takeUntil(this.unsubscribeAll))
             .subscribe(
@@ -76,34 +109,6 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
                     }
                 }
             )
-    }
-
-    ngOnDestroy() {
-        this.unsubscribeAll.next();
-        this.unsubscribeAll.complete();
-    }
-
-    nivelToLabel = NivelUtil.getLabel
-
-    criarColaboradorForm() {
-        this.colaboradorForm = new FormGroup({
-            id: new FormControl(),
-            nome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
-            sobrenome: new FormControl(null, [Validators.required, Validators.minLength(3)]),
-            cpf: new FormControl(null, [Validators.required, Validators.maxLength(11), Validators.minLength(11)]),
-            email: new FormControl(null, Validators.required),
-            dataNascimento: new FormControl(null, Validators.required),
-            dataAdmissao: new FormControl(null, Validators.required),
-            senioridade: new FormControl(null, Validators.required),
-            competencias: new FormControl(null, Validators.required)
-        })
-    }
-
-    criarCompetenciasForm() {
-        this.competenciasForm = new FormGroup({
-            competencia: new FormControl(null),
-            nivel: new FormControl(null)
-        });
     }
 
     submitForm() {
@@ -256,7 +261,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');
             return;
         }
-        competenciasItens = [...competenciasItens, competencias];
+        competenciasItens.push(competencias);
         this.colaboradorForm.get('competencias').setValue(competenciasItens);
         this.competenciasForm.setValue({
             competencia: null,

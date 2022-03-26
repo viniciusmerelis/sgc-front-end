@@ -3,10 +3,11 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { PageNotificationService } from '@nuvem/primeng-components';
 import { BlockUIService } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng';
-import { CompetenciaDto } from '../../models/competencia-dto.model';
-import { Competencia } from '../../models/competencia.model';
-import { CompetenciaService } from '../../service/competencia.service';
+import { CompetenciaDto } from 'src/app/domain/competencia/competencia-dto.model';
+import { Competencia } from 'src/app/domain/competencia/competencia.model';
+import { CompetenciaService } from 'src/app/shared/services/competencia.service';
 import { CompetenciaFormComponent } from '../competencia-form/competencia-form.component';
+
 
 @Component({
     selector: 'app-competencia-list',
@@ -47,41 +48,49 @@ export class CompetenciaListComponent implements OnInit {
         this.exibirModal();
     }
 
-    salvarCompetencia(competencia: Competencia) {
+    submitForm(competencia: Competencia) {
         if (!this.competencia) {
-            const competencia: Competencia = this.compForm.competenciaForm.value;
-            const competenciaDto: CompetenciaDto = {
-                nome: competencia.nome,
-                descricao: competencia.descricao,
-                categoriaId: competencia.categoria.id
-            }
-            this.competenciaService.salvar(competenciaDto)
-                .subscribe(result => {
-                    this.competencias = [...this.competencias, result];
-                    this.fecharModal();
-                    this.messageService.addCreateMsg('Competência criada com sucesso!');
-                }, (err: HttpErrorResponse) => {
-                    this.messageService.addErrorMessage(err.error.userMessage);
-                })
-
+            this.salvarCompetencia();
         } else {
-            const competencia: Competencia = this.compForm.competenciaForm.value;
-            const competenciaDto: CompetenciaDto = {
-                nome: competencia.nome,
-                descricao: competencia.descricao,
-                categoriaId: competencia.categoria.id
-            }
-            this.competenciaService.atualizar(competencia.id, competenciaDto)
-                .subscribe(result => {
-                    const idx = this.competencias.indexOf(this.competencia)
-                    this.competencias[idx] = result
-                    this.competencias = [...this.competencias]
-                    this.fecharModal();
-                    this.messageService.addUpdateMsg('Competência atualizada com sucesso!');
-                }, (err: HttpErrorResponse) => {
-                    this.messageService.addErrorMessage(err.error.userMessage);
-                })
+            this.atualizarCompetencia();
         }
+    }
+
+    salvarCompetencia() {
+        const competencia: Competencia = this.compForm.competenciaForm.value;
+        const competenciaDto = this.competenciaToCompetenciaDto(competencia);
+        this.competenciaService.salvar(competenciaDto)
+            .subscribe(result => {
+                this.competencias = [...this.competencias, result];
+                this.fecharModal();
+                this.messageService.addCreateMsg('Competência criada com sucesso!');
+            }, (err: HttpErrorResponse) => {
+                this.messageService.addErrorMessage(err.error.userMessage);
+            })
+    }
+
+    atualizarCompetencia() {
+        const competencia: Competencia = this.compForm.competenciaForm.value;
+        const competenciaDto = this.competenciaToCompetenciaDto(competencia);
+        this.competenciaService.atualizar(competencia.id, competenciaDto)
+            .subscribe(result => {
+                const idx = this.competencias.indexOf(this.competencia)
+                this.competencias[idx] = result
+                this.competencias = [...this.competencias]
+                this.fecharModal();
+                this.messageService.addUpdateMsg('Competência atualizada com sucesso!');
+            }, (err: HttpErrorResponse) => {
+                this.messageService.addErrorMessage(err.error.userMessage);
+            })
+    }
+
+    competenciaToCompetenciaDto(competencia: Competencia): CompetenciaDto {
+        const competenciaDto: CompetenciaDto = {
+            nome: competencia.nome,
+            descricao: competencia.descricao,
+            categoriaId: competencia.categoria.id
+        }
+        return competenciaDto;
     }
 
     editarCompetencia(competencia: Competencia) {
@@ -117,5 +126,4 @@ export class CompetenciaListComponent implements OnInit {
     fecharModal() {
         this.displayModal = false;
     }
-
 }

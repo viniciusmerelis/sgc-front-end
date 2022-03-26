@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ColaboradorDto } from '../models/colaborador-dto.model';
-import { Colaborador } from '../models/colaborador.model';
+import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
+import { ColaboradorDto } from '../../domain/colaborador/colaborador-dto.model';
+
 
 @Injectable({
     providedIn: 'root'
