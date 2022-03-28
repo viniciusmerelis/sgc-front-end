@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { PageNotificationService } from '@nuvem/primeng-components';
-import { BlockUIService } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng';
 import { CompetenciaDto } from 'src/app/domain/competencia/competencia-dto.model';
 import { Competencia } from 'src/app/domain/competencia/competencia.model';
@@ -19,13 +18,13 @@ export class CompetenciaListComponent implements OnInit {
     competencia: Competencia;
     competencias: Competencia[] = [];
     displayModal: boolean = false;
+    // @BlockUI() blockUI: BlockUI
     @ViewChild(CompetenciaFormComponent, { static: false }) compForm: CompetenciaFormComponent
 
     constructor(
         private competenciaService: CompetenciaService,
         private cd: ChangeDetectorRef,
         private messageService: PageNotificationService,
-        private blockUI: BlockUIService,
         private confirmationDialog: ConfirmationService
     ) { }
 
@@ -34,7 +33,6 @@ export class CompetenciaListComponent implements OnInit {
     }
 
     listarCompetencias() {
-        this.blockUI.start('Carregando competências...');
         return this.competenciaService.listar().subscribe(
             competencia => this.competencias = competencia,
             (err: HttpErrorResponse) => {
