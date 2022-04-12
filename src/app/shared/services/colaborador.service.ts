@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
-import { ColaboradorDto } from '../../domain/colaborador/colaborador-dto.model';
 
 
 @Injectable({
@@ -24,12 +23,12 @@ export class ColaboradorService {
         return this.http.get<Colaborador>(`${this.apiUrl}/${colaboradorId}`);
     }
 
-    salvar(colaborador: ColaboradorDto): Observable<ColaboradorDto> {
-        return this.http.post<ColaboradorDto>(this.apiUrl, colaborador);
+    salvar(colaborador: Colaborador): Observable<Colaborador> {
+        return this.http.post<Colaborador>(this.apiUrl, colaborador);
     }
 
-    atualizar(colaboradorId: number, colaborador: ColaboradorDto): Observable<ColaboradorDto> {
-        return this.http.put<ColaboradorDto>(`${this.apiUrl}/${colaboradorId}`, colaborador);
+    atualizar(colaboradorId: number, colaborador: Colaborador): Observable<Colaborador> {
+        return this.http.put<Colaborador>(`${this.apiUrl}/${colaboradorId}`, colaborador);
     }
 
     excluir(colaboradorId: number) {
