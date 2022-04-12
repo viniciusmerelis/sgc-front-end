@@ -1,4 +1,4 @@
-import { CompetenciaNivel } from "./competencia-nivel.model";
+import { CompetenciaDoColaborador } from "./competencia-do-colaborador.model";
 import { Senioridade } from "./senioridade.model";
 
 export interface Colaborador {
@@ -10,5 +10,5 @@ export interface Colaborador {
     dataNascimento: Date;
     dataAdmissao: Date;
     senioridade: Senioridade;
-    competencias: CompetenciaNivel[];
+    competencias: CompetenciaDoColaborador[];
 }

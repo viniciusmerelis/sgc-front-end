@@ -37,7 +37,7 @@ export class CompetenciaFormComponent implements OnInit {
   }
 
   definirCompetenciaForm() {
-    if (this.competencia == undefined) {
+    if (!this.competencia) {
       this.competenciaForm.setValue({
         id: null,
         nome: null,
