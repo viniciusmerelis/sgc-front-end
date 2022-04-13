@@ -1,11 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { PageNotificationService } from '@nuvem/primeng-components';
-import { ConfirmationService } from 'primeng';
-import { CompetenciaDto } from 'src/app/domain/competencia/competencia-dto.model';
-import { Competencia } from 'src/app/domain/competencia/competencia.model';
-import { CompetenciaService } from 'src/app/shared/services/competencia.service';
-import { CompetenciaFormComponent } from '../competencia-form/competencia-form.component';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {PageNotificationService} from '@nuvem/primeng-components';
+import {ConfirmationService} from 'primeng';
+import {Competencia} from 'src/app/domain/competencia/competencia.model';
+import {CompetenciaService} from 'src/app/shared/services/competencia.service';
+import {CompetenciaFormComponent} from '../competencia-form/competencia-form.component';
 
 
 @Component({
@@ -17,16 +16,16 @@ export class CompetenciaListComponent implements OnInit {
 
     competencia: Competencia;
     competencias: Competencia[] = [];
-    displayModal: boolean = false;
+    displayModal: Boolean = false;
     // @BlockUI() blockUI: BlockUI
-    @ViewChild(CompetenciaFormComponent, { static: false }) compForm: CompetenciaFormComponent
+    @ViewChild(CompetenciaFormComponent, {static: false}) compForm: CompetenciaFormComponent;
 
     constructor(
         private competenciaService: CompetenciaService,
         private cd: ChangeDetectorRef,
         private messageService: PageNotificationService,
         private confirmationDialog: ConfirmationService
-    ) { }
+    ) {}
 
     ngOnInit() {
         this.listarCompetencias();
@@ -56,44 +55,26 @@ export class CompetenciaListComponent implements OnInit {
 
     salvarCompetencia() {
         const competencia: Competencia = this.compForm.competenciaForm.value;
-        const competenciaDto = this.competenciaToCompetenciaDto(competencia);
-        this.competenciaService.salvar(competenciaDto)
-            .subscribe(result => {
-                this.competencias = [...this.competencias, result];
-                this.fecharModal();
-                this.messageService.addCreateMsg('Competência criada com sucesso!');
-            }, (err: HttpErrorResponse) => {
-                this.messageService.addErrorMessage(err.error.userMessage);
-            })
+        this.competenciaService.salvar(competencia).subscribe(result => {
+            this.competencias.push(result);
+            this.fecharModal();
+            this.messageService.addCreateMsg('Competência criada com sucesso!');
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.userMessage);
+        });
     }
 
     atualizarCompetencia() {
         const competencia: Competencia = this.compForm.competenciaForm.value;
-        const competenciaDto = this.competenciaToCompetenciaDto(competencia);
-        this.competenciaService.atualizar(competencia.id, competenciaDto)
-            .subscribe(result => {
-                const idx = this.competencias.indexOf(this.competencia)
-                this.competencias[idx] = result
-                this.competencias = [...this.competencias]
-                this.fecharModal();
-                this.messageService.addUpdateMsg('Competência atualizada com sucesso!');
-            }, (err: HttpErrorResponse) => {
-                this.messageService.addErrorMessage(err.error.userMessage);
-            })
-    }
-
-    competenciaToCompetenciaDto(competencia: Competencia): CompetenciaDto {
-        const competenciaDto: CompetenciaDto = {
-            nome: competencia.nome,
-            descricao: competencia.descricao,
-            categoriaId: competencia.categoria.id
-        }
-        return competenciaDto;
-    }
-
-    editarCompetencia(competencia: Competencia) {
-        this.competencia = competencia;
-        this.exibirModal();
+        this.competenciaService.atualizar(competencia.id, competencia).subscribe(result => {
+            const idx = this.competencias.indexOf(this.competencia);
+            this.competencias[idx] = result;
+            this.competencias = [...this.competencias];
+            this.fecharModal();
+            this.messageService.addUpdateMsg('Competência atualizada com sucesso!');
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.userMessage);
+        });
     }
 
     excluir(competencia: Competencia) {
@@ -104,7 +85,7 @@ export class CompetenciaListComponent implements OnInit {
             rejectLabel: 'Não',
             accept: () => {
                 this.competenciaService.excluir(competencia.id).subscribe(() => {
-                    this.competencias = this.competencias.filter(c => c.id !== competencia.id)
+                    this.competencias = this.competencias.filter(c => c.id !== competencia.id);
                     this.messageService.addDeleteMsg('Competência excluida com sucesso!');
                 }, (err: HttpErrorResponse) => {
                     this.messageService.addErrorMessage(err.error.detail, err.error.title);
@@ -114,6 +95,11 @@ export class CompetenciaListComponent implements OnInit {
                 this.confirmationDialog.close();
             }
         });
+    }
+
+    editarCompetencia(competencia: Competencia) {
+        this.competencia = competencia;
+        this.exibirModal();
     }
 
     exibirModal() {
