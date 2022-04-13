@@ -40,11 +40,6 @@ export class CompetenciaListComponent implements OnInit {
         );
     }
 
-    novaCompetencia() {
-        this.competencia = undefined;
-        this.exibirModal();
-    }
-
     submitForm(competencia: Competencia) {
         if (!this.competencia) {
             this.salvarCompetencia();
@@ -95,6 +90,11 @@ export class CompetenciaListComponent implements OnInit {
                 this.confirmationDialog.close();
             }
         });
+    }
+
+    novaCompetencia() {
+        this.competencia = undefined;
+        this.exibirModal();
     }
 
     editarCompetencia(competencia: Competencia) {

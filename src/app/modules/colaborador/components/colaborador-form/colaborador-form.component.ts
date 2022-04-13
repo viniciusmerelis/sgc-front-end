@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageNotificationService } from '@nuvem/primeng-components';
@@ -25,19 +25,18 @@ import { ColaboradorService } from '../../../../shared/services/colaborador.serv
 export class ColaboradorFormComponent implements OnInit, OnDestroy {
 
     unsubscribeAll = new Subject<void>();
+    colaborador: Colaborador;
     senioridades: Senioridade[] = [];
     competencias: Competencia[] = [];
-    colaboradorForm: FormGroup;
-    competenciasForm: FormGroup;
     niveis: SelectItem[];
     nivelToLabel = NivelUtil.getLabel;
+    colaboradorForm: FormGroup;
+    competenciasForm: FormGroup;
 
     constructor(
         private colaboradorService: ColaboradorService,
         private senioridadeService: SenioridadeService,
         private competenicaService: CompetenciaService,
-        private router: Router,
-        private route: ActivatedRoute,
         private messageService: PageNotificationService,
         private confirmationDialog: ConfirmationService
     ) { }
@@ -78,92 +77,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     }
 
     definirColaboradorForm() {
-        this.route.paramMap
-            .pipe(takeUntil(this.unsubscribeAll))
-            .subscribe(
-                params => {
-                    const param = params.get('param');
-                    if (param === 'criar') {
-                        this.colaboradorForm.setValue({
-                            id: null,
-                            nome: null,
-                            sobrenome: null,
-                            cpf: null,
-                            email: null,
-                            dataNascimento: null,
-                            dataAdmissao: null,
-                            senioridade: null,
-                            competencias: []
-                        })
-                    } else {
-                        this.colaboradorService.buscarPeloId(+param).subscribe(
-                            colaborador => {
-                                colaborador.dataNascimento = new Date(colaborador.dataNascimento);
-                                colaborador.dataAdmissao = new Date(colaborador.dataAdmissao);
-                                this.colaboradorForm.patchValue(colaborador);
-                                this.colaboradorForm.markAsPristine();
-                                this.colaboradorForm.markAsUntouched();
-                            }
-                        )
-                    }
-                }
-            )
-    }
 
-    submitForm() {
-        if (!this.colaboradorForm.get('id').value) {
-            this.salvarColaborador();
-        } else {
-            this.atualizarColaborador();
-        }
-    }
-
-    salvarColaborador() {
-        this.confirmationDialog.confirm({
-            header: 'Confirmar Salvamento',
-            message: 'Deseja realmente criar esse colaborador?',
-            acceptLabel: 'Sim',
-            rejectLabel: 'Não',
-            accept: () => {
-                let colaborador = this.colaboradorForm.value;
-                this.colaboradorService.salvar(colaborador).subscribe(
-                    c => {
-                        this.colaboradorForm.markAsPristine();
-                        this.competenciasForm.markAsUntouched();
-                        this.irParaColaboradorList();
-                        this.messageService.addCreateMsg('Colaborador criado com sucesso!');
-                    }, (err: HttpErrorResponse) => {
-                        this.messageService.addErrorMessage(err.error.detail, err.error.title);
-                    });
-            },
-            reject: () => {
-                this.confirmationDialog.close();
-            }
-        });
-    }
-
-    atualizarColaborador() {
-        this.confirmationDialog.confirm({
-            header: 'Confirmar Edição',
-            message: 'Deseja realmente atualizar esse colaborador?',
-            acceptLabel: 'Sim',
-            rejectLabel: 'Não',
-            accept: () => {
-                let colaborador = this.colaboradorForm.value;
-                this.colaboradorService.atualizar(colaborador.id, colaborador).subscribe(
-                    c => {
-                        this.colaboradorForm.markAsPristine();
-                        this.competenciasForm.markAsUntouched();
-                        this.irParaColaboradorList();
-                        this.messageService.addUpdateMsg('Colaborador atualizado com sucesso!');
-                    }, (err: HttpErrorResponse) => {
-                        this.messageService.addErrorMessage(err.error.detail, err.error.title);
-                    });
-            },
-            reject: () => {
-                this.confirmationDialog.close();
-            }
-        });
     }
 
     listarSenioridades() {
