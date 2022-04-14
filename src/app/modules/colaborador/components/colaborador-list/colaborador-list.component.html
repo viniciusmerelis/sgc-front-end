@@ -3,9 +3,9 @@
         <h2>Listagem de Colaboradores</h2>
         <span class="col"></span>
         <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Novo Colaborador"
-                [routerLink]="'criar'"></button>
+                (click)="novoColaborador()"></button>
     </div>
-    <p-table [value]="colaboradores" [responsive]="true" [scrollable]="true" scrollHeight="300px">
+    <p-table [value]="colaboradores" [responsive]="true" [paginator]="true" [rows]="10">
         <ng-template pTemplate="header">
             <tr>
                 <th [ngStyle]="{'width': '125px'}">Nome</th>
@@ -23,7 +23,7 @@
                 <td class="text-center">{{colaborador.senioridade.nome}}</td>
                 <td style="text-align: center">
                     <button pButton pRipple type="button" class="p-button-raised" icon="ui-icon-pencil"
-                            (click)="editar(colaborador.id)"></button>
+                            (click)="editarColaborador(colaborador.id)"></button>
                     <span class="pr-1"></span>
                     <button pButton type="button" class="p-button-raised ui-button-danger" icon="ui-icon-trash"
                             (click)="excluir(colaborador)"></button>
@@ -33,6 +33,15 @@
     </p-table>
 </p-card>
 <p-dialog [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}" [draggable]="false">
-    <app-colaborador-form></app-colaborador-form>
+    <app-colaborador-form *ngIf="displayModal" [colaborador]="colaborador" (onSubmit)="submitForm($event)">
+    </app-colaborador-form>
+    <p-footer>
+        <div>
+            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
+                    (click)="colabForm?.submit()"></button>
+            <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
+                    class="ui-button-secondary" (click)="fecharModal()"></button>
+        </div>
+    </p-footer>
 </p-dialog>
 <p-confirmDialog></p-confirmDialog>

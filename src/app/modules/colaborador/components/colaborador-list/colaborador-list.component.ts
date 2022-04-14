@@ -45,14 +45,13 @@ export class ColaboradorListComponent implements OnInit {
 
     submitForm(colaborador: Colaborador) {
         if (!this.colaborador) {
-            this.salvarColaborador();
+            this.salvarColaborador(colaborador);
         } else {
-            this.atualizarColaborador();
+            this.atualizarColaborador(colaborador);
         }
     }
 
-    salvarColaborador() {
-        const colaborador: Colaborador = this.colabForm.colaboradorForm.value;
+    salvarColaborador(colaborador: Colaborador) {
         this.colaboradorService.salvar(colaborador).subscribe(result => {
             this.colaboradores.push(result);
             this.fecharModal();
@@ -62,8 +61,7 @@ export class ColaboradorListComponent implements OnInit {
         });
     }
 
-    atualizarColaborador() {
-        const colaborador: Colaborador = this.colabForm.colaboradorForm.value;
+    atualizarColaborador(colaborador: Colaborador) {
         this.colaboradorService.atualizar(colaborador.id, colaborador).subscribe(result => {
             const idx = this.colaboradores.indexOf(this.colaborador);
             this.colaboradores[idx] = result;
@@ -101,9 +99,13 @@ export class ColaboradorListComponent implements OnInit {
         this.exibirModal();
     }
 
-    editarColaborador(colaborador: Colaborador) {
-        this.colaborador = colaborador;
-        this.exibirModal();
+    editarColaborador(colaboradorId: number) {
+        this.colaboradorService.buscarPeloId(colaboradorId).subscribe(colaborador => {
+            this.colaborador = colaborador;
+            this.exibirModal();
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.detail);
+        });
     }
 
     exibirModal() {

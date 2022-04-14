@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Competencia } from 'src/app/domain/competencia/competencia.model';
 import { CompetenciaColaboradoresNivelMaximo } from 'src/app/domain/turma-formacao/competencia-colaboradores-nivel-maximo.model';
+import {Colaborador} from "../../domain/colaborador/colaborador.model";
 
 
 
@@ -30,14 +31,14 @@ export class CompetenciaService {
     }
 
     atualizar(competenciaId: number, competencia: Competencia): Observable<Competencia> {
-        return this.http.put<Competencia>(`${this.apiUrl}/${competenciaId}`, competencia);
+        return this.http.put<Competencia>(this.apiUrl, competencia);
     }
 
     excluir(competenciaId: number) {
         return this.http.delete(`${this.apiUrl}/${competenciaId}`);
     }
 
-    buscarCompetenciasColaboradoresNivelMaximo(): Observable<CompetenciaColaboradoresNivelMaximo[]> {
-        return this.http.get<CompetenciaColaboradoresNivelMaximo[]>(`${this.apiUrl}/?colaboradores=nivel-maximo`);
+    buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId: number): Observable<Colaborador[]> {
+        return this.http.get<Colaborador[]>(`${this.apiUrl}/${competenciaId}?colaboradores=nivel-maximo`);
     }
 }

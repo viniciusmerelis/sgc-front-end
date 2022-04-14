@@ -1,20 +1,16 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PageNotificationService } from '@nuvem/primeng-components';
-import { ConfirmationService, SelectItem } from 'primeng';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
-import { CompetenciaDoColaborador } from 'src/app/domain/colaborador/competencia-do-colaborador.model';
-import { Nivel, NivelUtil } from 'src/app/domain/colaborador/nivel.enum';
-import { Senioridade } from 'src/app/domain/colaborador/senioridade.model';
-import { Competencia } from 'src/app/domain/competencia/competencia.model';
-import { CompetenciaService } from 'src/app/shared/services/competencia.service';
-import { SenioridadeService } from 'src/app/shared/services/senioridade.service';
-import { ColaboradorService } from '../../../../shared/services/colaborador.service';
-
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {PageNotificationService} from '@nuvem/primeng-components';
+import {ConfirmationService, SelectItem} from 'primeng';
+import {Subject} from 'rxjs';
+import {Colaborador} from 'src/app/domain/colaborador/colaborador.model';
+import {CompetenciaDoColaborador} from 'src/app/domain/colaborador/competencia-do-colaborador.model';
+import {Nivel, NivelUtil} from 'src/app/domain/colaborador/nivel.enum';
+import {Senioridade} from 'src/app/domain/colaborador/senioridade.model';
+import {Competencia} from 'src/app/domain/competencia/competencia.model';
+import {CompetenciaService} from 'src/app/shared/services/competencia.service';
+import {SenioridadeService} from 'src/app/shared/services/senioridade.service';
+import {ColaboradorService} from '../../../../shared/services/colaborador.service';
 
 
 @Component({
@@ -22,16 +18,17 @@ import { ColaboradorService } from '../../../../shared/services/colaborador.serv
     templateUrl: './colaborador-form.component.html',
     styleUrls: ['./colaborador-form.component.css']
 })
-export class ColaboradorFormComponent implements OnInit, OnDestroy {
+export class ColaboradorFormComponent implements OnInit {
 
-    unsubscribeAll = new Subject<void>();
-    colaborador: Colaborador;
     senioridades: Senioridade[] = [];
     competencias: Competencia[] = [];
     niveis: SelectItem[];
     nivelToLabel = NivelUtil.getLabel;
     colaboradorForm: FormGroup;
     competenciasForm: FormGroup;
+    @Input() displayModal: Boolean = false;
+    @Input() colaborador: Colaborador;
+    @Output() onSubmit = new EventEmitter<Colaborador>();
 
     constructor(
         private colaboradorService: ColaboradorService,
@@ -43,16 +40,11 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.niveis = NivelUtil.selectItems;
-        this.listarSenioridades();
-        this.listarCompetencias();
+        this.buscarSenioridades();
+        this.buscarCompetencias();
         this.criarColaboradorForm();
         this.criarCompetenciasForm();
         this.definirColaboradorForm();
-    }
-
-    ngOnDestroy() {
-        this.unsubscribeAll.next();
-        this.unsubscribeAll.complete();
     }
 
     criarColaboradorForm() {
@@ -66,7 +58,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             dataAdmissao: new FormControl(null, Validators.required),
             senioridade: new FormControl(null, Validators.required),
             competencias: new FormControl(null, Validators.required)
-        })
+        });
     }
 
     criarCompetenciasForm() {
@@ -77,63 +69,43 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     }
 
     definirColaboradorForm() {
-
+        if (!this.colaborador) {
+            this.colaboradorForm.setValue({
+                id: null,
+                nome: null,
+                sobrenome: null,
+                cpf: null,
+                email: null,
+                dataNascimento: null,
+                dataAdmissao: null,
+                senioridade: null,
+                competencias: null
+            });
+        } else {
+            this.colaborador.dataNascimento = new Date(this.colaborador.dataNascimento);
+            this.colaborador.dataAdmissao = new Date(this.colaborador.dataAdmissao);
+            this.colaboradorForm.setValue(this.colaborador);
+        }
     }
 
-    listarSenioridades() {
+    buscarSenioridades() {
         return this.senioridadeService.listar().subscribe(
             senioridade => this.senioridades = senioridade
         );
     }
 
-    listarCompetencias() {
+    buscarCompetencias() {
         return this.competenicaService.listar().subscribe(
             competencia => this.competencias = competencia
         );
     }
 
-    irParaColaboradorList() {
-        if (this.podeVoltarParaColaboradorList()) {
-            this.router.navigate(['/colaboradores'], {
-                relativeTo: this.route
-            });
-        } else {
-            this.confirmationDialog.confirm({
-                header: 'Confirmar Ação',
-                message: 'Deseja realmente voltar para listagem de colaboradores? As informação preenchidas ou modificadas serão perdidas.',
-                acceptLabel: 'Sim',
-                rejectLabel: 'Não',
-                accept: () => {
-                    this.router.navigate(['/colaboradores'], {
-                        relativeTo: this.route
-                    });
-                },
-                reject: () => {
-                    this.confirmationDialog.close();
-                }
-            })
-        }
+    submit(): void {
+        const colaborador: Colaborador = this.colaboradorForm.value;
+        this.onSubmit.next(colaborador);
     }
 
-    podeVoltarParaColaboradorList(): boolean {
-        return this.colaboradorForm.pristine;
-    }
-
-    deveMostrarMensagemDeValidacao(control: AbstractControl): boolean {
-        return control.errors && control.touched || control.dirty;
-    }
-
-    mensagemDeValidacao(control: AbstractControl) {
-        if (control.hasError('required')) {
-            return 'Campo obrigatório.';
-        }
-        if (control.hasError('minlength')) {
-            return `O tamanho minímo é de ${control.getError('minlength').requiredLength} caracteres.`
-        }
-        return '';
-    }
-
-    adicionarCompetencias() {
+    adicionarCompetencias(): void {
         if (this.competenciasForm.get('competencia').value == null || this.competenciasForm.get('nivel').value == null) {
             this.messageService.addErrorMessage('Deve ser selecionda uma competência e seu nivel!');
             return;
@@ -163,7 +135,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
         this.colaboradorForm.markAsDirty();
     }
 
-    excluirItem(indexRow: number) {
+    excluirItem(indexRow: number): void {
         let competenciaItens: CompetenciaDoColaborador[] = [...this.colaboradorForm.get('competencias').value];
         competenciaItens.splice(indexRow, 1);
         this.colaboradorForm.get('competencias').setValue(competenciaItens);
@@ -172,6 +144,21 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             return;
         }
         this.colaboradorForm.markAsDirty();
+    }
+
+    // TODO: Colocar esses metodos em um classe Utils
+    deveMostrarMensagemDeValidacao(control: AbstractControl): boolean {
+        return control.errors && control.touched || control.dirty;
+    }
+
+    mensagemDeValidacao(control: AbstractControl) {
+        if (control.hasError('required')) {
+            return 'Campo obrigatório.';
+        }
+        if (control.hasError('minlength')) {
+            return `O tamanho minímo é de ${control.getError('minlength').requiredLength} caracteres.`;
+        }
+        return '';
     }
 
 }

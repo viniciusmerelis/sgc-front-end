@@ -16,7 +16,7 @@ export class CompetenciaListComponent implements OnInit {
 
     competencia: Competencia;
     competencias: Competencia[] = [];
-    displayModal: Boolean = false;
+    displayModal: boolean = false;
     // @BlockUI() blockUI: BlockUI
     @ViewChild(CompetenciaFormComponent, {static: false}) compForm: CompetenciaFormComponent;
 
@@ -42,37 +42,33 @@ export class CompetenciaListComponent implements OnInit {
 
     submitForm(competencia: Competencia) {
         if (!this.competencia) {
-            this.salvarCompetencia();
+            this.salvarCompetencia(competencia);
         } else {
-            this.atualizarCompetencia();
+            this.atualizarCompetencia(competencia);
         }
     }
 
-    salvarCompetencia() {
-        const competencia: Competencia = this.compForm.competenciaForm.value;
-        this.competenciaService.salvar(competencia).subscribe(result => {
-            this.competencias.push(result);
+    salvarCompetencia(competencia: Competencia) {
+        this.competenciaService.salvar(competencia).subscribe(() => {
             this.fecharModal();
+            this.listarCompetencias();
             this.messageService.addCreateMsg('Competência criada com sucesso!');
         }, (err: HttpErrorResponse) => {
             this.messageService.addErrorMessage(err.error.userMessage);
         });
     }
 
-    atualizarCompetencia() {
-        const competencia: Competencia = this.compForm.competenciaForm.value;
-        this.competenciaService.atualizar(competencia.id, competencia).subscribe(result => {
-            const idx = this.competencias.indexOf(this.competencia);
-            this.competencias[idx] = result;
-            this.competencias = [...this.competencias];
+    atualizarCompetencia(competencia: Competencia) {
+        this.competenciaService.atualizar(competencia.id, competencia).subscribe(() => {
             this.fecharModal();
+            this.listarCompetencias();
             this.messageService.addUpdateMsg('Competência atualizada com sucesso!');
         }, (err: HttpErrorResponse) => {
-            this.messageService.addErrorMessage(err.error.userMessage);
+            this.messageService.addErrorMessage(err.error.detail);
         });
     }
 
-    excluir(competencia: Competencia) {
+    excluir(competencia: Competencia): void {
         this.confirmationDialog.confirm({
             header: 'Confirmar exclusão',
             message: 'Deseja realmente excluir essa competência?',
@@ -92,14 +88,18 @@ export class CompetenciaListComponent implements OnInit {
         });
     }
 
-    novaCompetencia() {
+    novaCompetencia(): void {
         this.competencia = undefined;
         this.exibirModal();
     }
 
-    editarCompetencia(competencia: Competencia) {
-        this.competencia = competencia;
-        this.exibirModal();
+    editarCompetencia(competenciaId: number): void {
+        this.competenciaService.buscarPeloId(competenciaId).subscribe(competencia => {
+            this.competencia = competencia;
+            this.exibirModal();
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.detail, err.error.title);
+        });
     }
 
     exibirModal() {

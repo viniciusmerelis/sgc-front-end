@@ -21,7 +21,7 @@
                 <td class="text-center">{{competencia.categoria.nome}}</td>
                 <td style="text-align: center">
                     <button pButton pRipple type="button" class="p-button-raised" icon="ui-icon-pencil"
-                            (click)="editarCompetencia(competencia)"></button>
+                            (click)="editarCompetencia(competencia.id)"></button>
                     <span class="pr-1"></span>
                     <button pButton type="button" class="p-button-raised ui-button-danger" icon="ui-icon-trash"
                             (click)="excluir(competencia)"></button>
@@ -35,12 +35,10 @@
     <app-competencia-form *ngIf="displayModal" [competencia]="competencia" (onSubmit)="submitForm($event)">
     </app-competencia-form>
     <p-footer>
-        <div>
-            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
-                    (click)="compForm?.submit()"></button>
-            <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
-                    class="ui-button-secondary" (click)="fecharModal()"></button>
-        </div>
+        <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
+                (click)="compForm?.submit()"></button>
+        <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
+                class="ui-button-secondary" (click)="fecharModal()"></button>
     </p-footer>
 </p-dialog>
 <p-confirmDialog></p-confirmDialog>

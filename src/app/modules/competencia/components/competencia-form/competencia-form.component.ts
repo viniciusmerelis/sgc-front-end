@@ -13,7 +13,7 @@ export class CompetenciaFormComponent implements OnInit {
 
     categorias: Categoria[];
     competenciaForm: FormGroup;
-    @Input() displayModal: Boolean = false;
+    @Input() displayModal: boolean = false;
     @Input() competencia: Competencia;
     @Output() onSubmit = new EventEmitter<Competencia>();
 
@@ -51,10 +51,7 @@ export class CompetenciaFormComponent implements OnInit {
     }
 
     listarCategorias() {
-        return this.categoriaService.listar().subscribe(categoria => {
-                this.categorias = categoria
-            }
-        );
+        return this.categoriaService.listar().subscribe(categoria => this.categorias = categoria);
     }
 
     submit() {
@@ -66,7 +63,7 @@ export class CompetenciaFormComponent implements OnInit {
         return control.errors && control.touched || control.dirty;
     }
 
-    mensagemDeValidacao(control: AbstractControl) {
+    mensagemDeValidacao(control: AbstractControl): string {
         if (control.hasError('required')) {
             return 'Campo obrigatório.';
         }
