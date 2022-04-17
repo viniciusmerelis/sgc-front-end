@@ -7,13 +7,12 @@ import { ConfirmationService, SelectItem } from 'primeng';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
-import { CompetenciaNivel } from 'src/app/domain/colaborador/competencia-nivel.model';
+import { CompetenciaDoColaborador } from 'src/app/domain/colaborador/competencia-nivel.model';
 import { Nivel, NivelUtil } from 'src/app/domain/colaborador/nivel.enum';
 import { Senioridade } from 'src/app/domain/colaborador/senioridade.model';
 import { Competencia } from 'src/app/domain/competencia/competencia.model';
 import { CompetenciaService } from 'src/app/shared/services/competencia.service';
 import { SenioridadeService } from 'src/app/shared/services/senioridade.service';
-import { ColaboradorDto } from '../../../../domain/colaborador/colaborador-dto.model';
 import { ColaboradorService } from '../../../../shared/services/colaborador.service';
 
 
@@ -68,7 +67,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             dataAdmissao: new FormControl(null, Validators.required),
             senioridade: new FormControl(null, Validators.required),
             competencias: new FormControl(null, Validators.required)
-        })
+        });
     }
 
     criarCompetenciasForm() {
@@ -95,7 +94,7 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
                             dataAdmissao: null,
                             senioridade: null,
                             competencias: []
-                        })
+                        });
                     } else {
                         this.colaboradorService.buscarPeloId(+param).subscribe(
                             colaborador => {
@@ -105,10 +104,10 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
                                 this.colaboradorForm.markAsPristine();
                                 this.colaboradorForm.markAsUntouched();
                             }
-                        )
+                        );
                     }
                 }
-            )
+            );
     }
 
     submitForm() {
@@ -126,8 +125,8 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
             accept: () => {
-                const colaboradorDto = this.colaboradorToColaboradorDto(this.colaboradorForm.value);
-                this.colaboradorService.salvar(colaboradorDto).subscribe(
+                const colaborador = this.colaboradorForm.value;
+                this.colaboradorService.salvar(colaborador).subscribe(
                     c => {
                         this.colaboradorForm.markAsPristine();
                         this.competenciasForm.markAsUntouched();
@@ -150,9 +149,8 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
             accept: () => {
-                const colaborador: Colaborador = this.colaboradorForm.value;
-                const colaboradorDto = this.colaboradorToColaboradorDto(this.colaboradorForm.value);
-                this.colaboradorService.atualizar(colaborador.id, colaboradorDto).subscribe(
+                const colaborador = this.colaboradorForm.value;
+                this.colaboradorService.atualizar(colaborador.id, colaborador).subscribe(
                     c => {
                         this.colaboradorForm.markAsPristine();
                         this.competenciasForm.markAsUntouched();
@@ -166,25 +164,6 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
                 this.confirmationDialog.close();
             }
         });
-    }
-
-    colaboradorToColaboradorDto(colaborador: Colaborador) {
-        const colaboradorDto: ColaboradorDto = {
-            nome: colaborador.nome,
-            sobrenome: colaborador.sobrenome,
-            cpf: colaborador.cpf,
-            email: colaborador.email,
-            dataNascimento: colaborador.dataNascimento,
-            dataAdmissao: colaborador.dataAdmissao,
-            senioridadeId: colaborador.senioridade.id,
-            competencias: colaborador.competencias.map(
-                c => ({
-                    id: c.id,
-                    nivel: c.nivel
-                })
-            )
-        }
-        return colaboradorDto;
     }
 
     listarSenioridades() {
@@ -250,14 +229,14 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
             nivel: Nivel
         } = this.competenciasForm.value;
 
-        const competencias: CompetenciaNivel = {
+        const competencias: CompetenciaDoColaborador = {
             id: competenciasForm.competencia.id,
             nome: competenciasForm.competencia.nome,
             nivel: competenciasForm.nivel
         }
-        let competenciasItens: CompetenciaNivel[] = this.colaboradorForm.get('competencias').value;
+        let competenciasItens: CompetenciaDoColaborador[] = this.colaboradorForm.get('competencias').value;
 
-        if (competenciasItens.some(c => c.id == competenciasForm.competencia.id && c.nome == competenciasForm.competencia.nome)) {
+        if (competenciasItens.some(c => c.id == competenciasForm.competencia.id && c.nome === competenciasForm.competencia.nome)) {
             this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');
             return;
         }
@@ -271,10 +250,10 @@ export class ColaboradorFormComponent implements OnInit, OnDestroy {
     }
 
     excluirItem(indexRow: number) {
-        let competenciaItens: CompetenciaNivel[] = [...this.colaboradorForm.get('competencias').value];
+        let competenciaItens: CompetenciaDoColaborador[] = [...this.colaboradorForm.get('competencias').value];
         competenciaItens.splice(indexRow, 1);
         this.colaboradorForm.get('competencias').setValue(competenciaItens);
-        if (competenciaItens.length == 0) {
+        if (competenciaItens.length === 0) {
             this.messageService.addErrorMessage('Deve ser inserido ao menos uma competência a esse colaborador!');
             return;
         }

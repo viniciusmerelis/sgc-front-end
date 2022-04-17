@@ -1,6 +1,6 @@
-import { Nivel } from "./nivel.enum";
+import { Nivel } from './nivel.enum';
 
-export interface CompetenciaNivel {
+export interface CompetenciaDoColaborador {
     id: number;
     nome: string;
     nivel: Nivel;

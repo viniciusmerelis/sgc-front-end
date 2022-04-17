@@ -27,13 +27,13 @@ export class ColaboradorListComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.listarColaboradores()
+        this.listarColaboradores();
     }
 
     listarColaboradores() {
         return this.colaboradorService.listar().subscribe(
             colaborador => {
-                this.colaboradores = colaborador
+                this.colaboradores = colaborador;
             }, (err: HttpErrorResponse) => {
                 this.messageService.addErrorMessage('Não foi possível listar os colaboradores.');
             }
@@ -51,7 +51,7 @@ export class ColaboradorListComponent implements OnInit {
                     this.colaboradores = this.colaboradores.filter(c => c.id !== colaborador.id);
                     this.messageService.addDeleteMsg('Colaborador excluido com sucesso!');
                 }, (err: HttpErrorResponse) => {
-                    this.messageService.addErrorMessage(err.error.detail, err.error.title)
+                    this.messageService.addErrorMessage(err.error.detail, err.error.title);
                 });
             },
             reject: () => {
