@@ -1,32 +1,35 @@
 <form [formGroup]="competenciaForm" (submit)="submit()">
     <p-fieldset legend="Competência">
-    <div class="grid mb-2 mt-3 pl-2 pr-2">
-        <div class="col-12 sm:col-6 md:col-6">
-            <span class="ui-float-label">
-                <input id="float-input" type="text" pInputText autocomplete="off" formControlName="nome"/>
-                <label for="float-input">Nome da Competência</label>
-            </span>
-            <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('nome'))" class="p-invalid"
-                style="color: red;">{{mensagemDeValidacao(competenciaForm.get('nome'))}}</small>
+        <div class="grid mb-2 mt-3 pl-2 pr-2">
+            <div class="col-12 sm:col-6 md:col-6">
+                <span class="ui-float-label">
+                    <input id="input-nome-competencia" type="text" pInputText autocomplete="off"
+                           formControlName="nome"/>
+                    <label for="input-nome-competencia">Nome da Competência</label>
+                </span>
+                <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('nome'))" class="p-invalid"
+                       style="color: red;">{{mensagemDeValidacao(competenciaForm.get('nome'))}}</small>
+            </div>
+            <div class="col-12 sm:col-6 md:col-6">
+                <span class="ui-float-label">
+                    <p-dropdown [options]="categorias" placeholder="." optionLabel="nome" [showClear]="true"
+                                id="dropdown-categoria"
+                                formControlName="categoria">
+                    </p-dropdown>
+                    <label for="dropdown-categoria">Categoria</label>
+                </span>
+                <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('categoria'))" class="p-invalid"
+                       style="color: red;">{{mensagemDeValidacao(competenciaForm.get('categoria'))}}</small>
+            </div>
+            <div class="col-12 sm:col-12 md:col-12 mt-3">
+                <span class="ui-float-label">
+                    <textarea pInputTextarea id="input-descricao-competencia" rows="10" cols="50" autoResize="autoResize"
+                              formControlName="descricao"></textarea>
+                    <label for="input-descricao-competencia">Descrição</label>
+                </span>
+                <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('descricao'))" class="p-invalid"
+                       style="color: red;">{{mensagemDeValidacao(competenciaForm.get('descricao'))}}</small>
+            </div>
         </div>
-        <div class="col-12 sm:col-6 md:col-6">
-            <span class="ui-float-label">
-                <p-dropdown [options]="categorias" placeholder="." optionLabel="nome" [showClear]="true"
-                    formControlName="categoria">
-                </p-dropdown>
-                <label for="float-input">Categoria</label>
-            </span>
-            <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('categoria'))" class="p-invalid"
-                style="color: red;">{{mensagemDeValidacao(competenciaForm.get('categoria'))}}</small>
-        </div>
-        <div class="col-12 sm:col-12 md:col-12 mt-3">
-            <span class="ui-float-label">
-                <textarea pInputTextarea id="float-input" rows="10" cols="50" formControlName="descricao"></textarea>
-                <label for="float-input">Descrição</label>
-            </span>
-            <small *ngIf="deveMostrarMensagemDeValidacao(competenciaForm.get('descricao'))" class="p-invalid"
-                style="color: red;">{{mensagemDeValidacao(competenciaForm.get('descricao'))}}</small>
-        </div>
-    </div>
-</p-fieldset>
+    </p-fieldset>
 </form>

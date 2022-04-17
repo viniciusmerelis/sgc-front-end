@@ -15,6 +15,7 @@ import { Turma } from 'src/app/domain/turma-formacao/turma.model';
 import { CompetenciaService } from 'src/app/shared/services/competencia.service';
 import { TurmaFormacaoService } from 'src/app/shared/services/turma-formacao.service';
 import { StatusService } from '../../../../shared/services/status.service';
+import {Colaborador} from "../../../../domain/colaborador/colaborador.model";
 
 
 
@@ -27,7 +28,7 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
 
   unsubscribeAll = new Subject<void>();
   status: Status[];
-  competenciaColaboradorNivelMax: CompetenciaColaboradoresNivelMaximo[];
+  competenciaColaboradorNivelMax: Colaborador[];
   turmaForm: FormGroup;
   competenciaColaboradorForm: FormGroup;
   colaboradores: SelectItem[] = [];
@@ -193,7 +194,7 @@ export class TurmaFormacaoFormComponent implements OnInit, OnDestroy {
   }
 
   buscarCompetenciasColaboradoresNivelMaximo() {
-    return this.competenciaService.buscarCompetenciasColaboradoresNivelMaximo().subscribe(
+    return this.competenciaService.buscarColaboradoresComNivelMaximoNaCompetencia(1).subscribe(
       ccNivelMax => {
         this.competenciaColaboradorNivelMax = ccNivelMax
       }, (err: HttpErrorResponse) => {

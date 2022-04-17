@@ -1,5 +1,5 @@
-import { CompetenciaDoColaborador } from './competencia-nivel.model';
-import { Senioridade } from './senioridade.model';
+import {CompetenciaDoColaborador} from './competencia-do-colaborador.model';
+import {Senioridade} from './senioridade.model';
 
 export interface Colaborador {
     id: number;
