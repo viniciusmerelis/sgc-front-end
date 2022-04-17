@@ -1,4 +1,4 @@
-import { Nivel } from "./nivel.enum";
+import { Nivel } from './nivel.enum';
 
 export interface CompetenciaDoColaborador {
     id: number;

@@ -1,8 +1,7 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PageNotificationService} from '@nuvem/primeng-components';
 import {ConfirmationService, SelectItem} from 'primeng';
-import {Subject} from 'rxjs';
 import {Colaborador} from 'src/app/domain/colaborador/colaborador.model';
 import {CompetenciaDoColaborador} from 'src/app/domain/colaborador/competencia-do-colaborador.model';
 import {Nivel, NivelUtil} from 'src/app/domain/colaborador/nivel.enum';
@@ -36,7 +35,8 @@ export class ColaboradorFormComponent implements OnInit {
         private competenicaService: CompetenciaService,
         private messageService: PageNotificationService,
         private confirmationDialog: ConfirmationService
-    ) { }
+    ) {
+    }
 
     ngOnInit() {
         this.niveis = NivelUtil.selectItems;
@@ -119,10 +119,10 @@ export class ColaboradorFormComponent implements OnInit {
             id: competenciasForm.competencia.id,
             nome: competenciasForm.competencia.nome,
             nivel: competenciasForm.nivel
-        }
-        let competenciasItens: CompetenciaDoColaborador[] = this.colaboradorForm.get('competencias').value;
+        };
+        const competenciasItens: CompetenciaDoColaborador[] = this.colaboradorForm.get('competencias').value;
 
-        if (competenciasItens.some(c => c.id == competenciasForm.competencia.id && c.nome == competenciasForm.competencia.nome)) {
+        if (competenciasItens.some(c => c.id === competenciasForm.competencia.id && c.nome === competenciasForm.competencia.nome)) {
             this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');
             return;
         }
@@ -136,10 +136,10 @@ export class ColaboradorFormComponent implements OnInit {
     }
 
     excluirItem(indexRow: number): void {
-        let competenciaItens: CompetenciaDoColaborador[] = [...this.colaboradorForm.get('competencias').value];
+        const competenciaItens: CompetenciaDoColaborador[] = [...this.colaboradorForm.get('competencias').value];
         competenciaItens.splice(indexRow, 1);
         this.colaboradorForm.get('competencias').setValue(competenciaItens);
-        if (competenciaItens.length == 0) {
+        if (competenciaItens.length === 0) {
             this.messageService.addErrorMessage('Deve ser inserido ao menos uma competência a esse colaborador!');
             return;
         }
