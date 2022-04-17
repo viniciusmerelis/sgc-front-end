@@ -3,9 +3,9 @@
         <h2>Listagem de Competências</h2>
         <span class="col"></span>
         <button pButton type="button" class="ui-button-success" icon="ui-icon-plus" label="Nova Competência"
-            (click)="novaCompetencia()"></button>
+                (click)="novaCompetencia()"></button>
     </div>
-    <p-table [value]="competencias" [responsive]="true" [scrollable]="true" scrollHeight="350px">
+    <p-table [value]="competencias" [responsive]="true" [paginator]="true" [rows]="10">
         <ng-template pTemplate="header">
             <tr>
                 <th [ngStyle]="{'width': '125px'}">Nome</th>
@@ -21,10 +21,10 @@
                 <td class="text-center">{{competencia.categoria.nome}}</td>
                 <td style="text-align: center">
                     <button pButton pRipple type="button" class="p-button-raised" icon="ui-icon-pencil"
-                        (click)="editarCompetencia(competencia)"></button>
+                            (click)="editarCompetencia(competencia.id)"></button>
                     <span class="pr-1"></span>
                     <button pButton type="button" class="p-button-raised ui-button-danger" icon="ui-icon-trash"
-                        (click)="excluir(competencia)"></button>
+                            (click)="excluir(competencia)"></button>
                 </td>
             </tr>
         </ng-template>
@@ -35,12 +35,10 @@
     <app-competencia-form *ngIf="displayModal" [competencia]="competencia" (onSubmit)="submitForm($event)">
     </app-competencia-form>
     <p-footer>
-        <div>
-            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
+        <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
                 (click)="compForm?.submit()"></button>
-            <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
+        <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
                 class="ui-button-secondary" (click)="fecharModal()"></button>
-        </div>
     </p-footer>
 </p-dialog>
 <p-confirmDialog></p-confirmDialog>

@@ -1,11 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PageNotificationService } from '@nuvem/primeng-components';
-import { BlockUIService } from 'ng-block-ui';
-import { ConfirmationService } from 'primeng';
-import { Colaborador } from 'src/app/domain/colaborador/colaborador.model';
-import { ColaboradorService } from '../../../../shared/services/colaborador.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {PageNotificationService} from '@nuvem/primeng-components';
+import {BlockUIService} from 'ng-block-ui';
+import {ConfirmationService} from 'primeng';
+import {Colaborador} from 'src/app/domain/colaborador/colaborador.model';
+import {ColaboradorService} from '../../../../shared/services/colaborador.service';
+import {ColaboradorFormComponent} from "../colaborador-form/colaborador-form.component";
 
 
 @Component({
@@ -15,16 +15,19 @@ import { ColaboradorService } from '../../../../shared/services/colaborador.serv
 })
 export class ColaboradorListComponent implements OnInit {
 
+    colaborador: Colaborador;
     colaboradores: Colaborador[] = [];
+    displayModal: Boolean = false;
+    @ViewChild(ColaboradorFormComponent, {static: false}) colabForm: ColaboradorFormComponent;
 
     constructor(
         private colaboradorService: ColaboradorService,
-        private router: Router,
-        private route: ActivatedRoute,
         private messageService: PageNotificationService,
         private blockUI: BlockUIService,
-        private confirmationDialog: ConfirmationService
-    ) { }
+        private confirmationDialog: ConfirmationService,
+        private cd: ChangeDetectorRef
+    ) {
+    }
 
     ngOnInit() {
         this.listarColaboradores()
@@ -38,6 +41,37 @@ export class ColaboradorListComponent implements OnInit {
                 this.messageService.addErrorMessage('Não foi possível listar os colaboradores.');
             }
         );
+    }
+
+    submitForm(colaborador: Colaborador) {
+        if (!this.colaborador) {
+            this.salvarColaborador(colaborador);
+        } else {
+            this.atualizarColaborador(colaborador);
+        }
+    }
+
+    salvarColaborador(colaborador: Colaborador) {
+        this.colaboradorService.salvar(colaborador).subscribe(result => {
+            this.colaboradores.push(result);
+            this.fecharModal();
+            this.messageService.addCreateMsg('Colaborador criado com sucesso!');
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.detail, err.error.title);
+        });
+    }
+
+    atualizarColaborador(colaborador: Colaborador) {
+        this.colaboradorService.atualizar(colaborador.id, colaborador).subscribe(result => {
+            const idx = this.colaboradores.indexOf(this.colaborador);
+            this.colaboradores[idx] = result;
+            this.colaboradores = [...this.colaboradores];
+            this.fecharModal();
+            this.messageService.addUpdateMsg('Colaborador atualizado com sucesso!');
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.detail, err.error.title);
+        });
+
     }
 
     excluir(colaborador: Colaborador) {
@@ -60,7 +94,26 @@ export class ColaboradorListComponent implements OnInit {
         });
     }
 
-    editar(colaboradorId: number) {
-        this.router.navigate([`${colaboradorId}`], { relativeTo: this.route });
+    novoColaborador() {
+        this.colaborador = undefined;
+        this.exibirModal();
+    }
+
+    editarColaborador(colaboradorId: number) {
+        this.colaboradorService.buscarPeloId(colaboradorId).subscribe(colaborador => {
+            this.colaborador = colaborador;
+            this.exibirModal();
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.detail);
+        });
+    }
+
+    exibirModal() {
+        this.displayModal = true;
+        this.cd.markForCheck();
+    }
+
+    fecharModal() {
+        this.displayModal = false;
     }
 }

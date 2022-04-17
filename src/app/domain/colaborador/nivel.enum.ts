@@ -1,4 +1,4 @@
-import { SelectItem } from "primeng";
+import { SelectItem } from 'primeng';
 
 export class Nivel {
     static CONHECE = 'CONHECE';
@@ -15,9 +15,9 @@ export class NivelUtil {
     ];
 
     static getLabel(nivel: Nivel): string {
-        const item = NivelUtil.selectItems.find(item => item.value == nivel)
+        const item = NivelUtil.selectItems.find(item => item.value === nivel);
         if (item) {
-            return item.label
+            return item.label;
         }
         return '' + nivel;
     }
