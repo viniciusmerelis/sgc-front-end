@@ -24,7 +24,7 @@
                 <td class="text-center">{{turma.dataTermino | date: 'dd/MM/yyyy'}}</td>
                 <td class="text-center">{{turma.status.nome}}</td>
                 <td style="text-align:center">
-                    <button pButton type="button" (click)="navigateTo(turma.id)" icon="ui-icon-pencil"
+                    <button pButton type="button" (click)="editarTurma(turma.id)" icon="ui-icon-pencil"
                         styleClass="rounded-button ui-button-help"></button>
                     <span class="pr-1"></span>
                     <button pButton type="button" (click)="excluirTurma(turma)" icon="ui-icon-trash"

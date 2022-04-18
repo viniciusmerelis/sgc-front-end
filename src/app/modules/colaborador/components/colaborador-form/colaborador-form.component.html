@@ -105,8 +105,7 @@
                         <button type="button" icon="ui-icon-plus" pButton (click)="adicionarCompetencias()"></button>
                     </div>
 
-                    <p-table [value]="colaboradorForm.get('competencias').value" [responsive]="true" [paginator]="true"
-                             [rows]="3" class="mt-5">
+                    <p-table [value]="colaboradorForm.get('competencias').value" [responsive]="true" class="mt-5">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th [ngStyle]="{'width': '125px'}">Competencia</th>

@@ -53,23 +53,21 @@ export class ColaboradorListComponent implements OnInit {
 
     salvarColaborador(colaborador: Colaborador) {
         this.colaboradorService.salvar(colaborador).subscribe(result => {
-            this.colaboradores.push(result);
             this.fecharModal();
+            this.listarColaboradores();
             this.messageService.addCreateMsg('Colaborador criado com sucesso!');
         }, (err: HttpErrorResponse) => {
-            this.messageService.addErrorMessage(err.error.detail, err.error.title);
+            this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
         });
     }
 
     atualizarColaborador(colaborador: Colaborador) {
         this.colaboradorService.atualizar(colaborador.id, colaborador).subscribe(result => {
-            const idx = this.colaboradores.indexOf(this.colaborador);
-            this.colaboradores[idx] = result;
-            this.colaboradores = [...this.colaboradores];
             this.fecharModal();
+            this.listarColaboradores();
             this.messageService.addUpdateMsg('Colaborador atualizado com sucesso!');
         }, (err: HttpErrorResponse) => {
-            this.messageService.addErrorMessage(err.error.detail, err.error.title);
+            this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
         });
 
     }

@@ -1,4 +1,4 @@
-import { CompetenciaColaborador } from "./competencia-colaborador.model";
+import { CompetenciaEColaborador } from "./competencia-colaborador.model";
 import { Status } from "./status.model";
 
 export interface Turma {
@@ -8,5 +8,5 @@ export interface Turma {
     dataInicio: string | Date;
     dataTermino: string | Date;
     status: Status;
-    competenciasColaboradores: CompetenciaColaborador[];
+    competenciasEColaboradores: CompetenciaEColaborador[];
 }
