@@ -36,7 +36,7 @@
                     <small *ngIf="deveMostrarMensagemDeValidacao(colaboradorForm.get('email'))" class="p-invalid"
                            style="color: red;">{{mensagemDeValidacao(colaboradorForm.get('email'))}}</small>
                 </div>
-                <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
+                <div class="col-12 sm:col-2 md:col-3 mb-2 mt-5">
                     <span class="ui-float-label">
                         <p-calendar dateFormat="dd/mm/yy" [yearNavigator]="true" yearRange="1950:2022"
                                     id="float-calendar-dataNascimento"
@@ -47,7 +47,7 @@
                            class="p-invalid"
                            style="color: red;">{{mensagemDeValidacao(colaboradorForm.get('dataNascimento'))}}</small>
                 </div>
-                <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
+                <div class="col-12 sm:col-2 md:col-3 mb-2 mt-5">
                     <span class="ui-float-label">
                         <p-calendar dateFormat="dd/mm/yy" [yearNavigator]="true" yearRange="1950:2022"
                                     id="float-calendar-dataAdmissao"
@@ -72,12 +72,12 @@
         </p-fieldset>
     </form>
 
-    <form [formGroup]="competenciasForm" (submit)="submit()">
+    <form [formGroup]="competenciasForm">
         <div class="grid pl-2 pr-2">
             <span class="mt-5"></span>
             <p-fieldset legend="Competências do Colaborador">
                 <div class="grid mb-5 pl-2 pr-2 align-items-center">
-                    <div class="col-12 sm:col-2 md:col-2 mt-3">
+                    <div class="col-12 sm:col-3 md:col-3 mt-3">
                         <span class="ui-float-label">
                             <p-dropdown [options]="competencias" placeholder="." optionLabel="nome" [showClear]="true"
                                         id="float-dropdown-competencia"
@@ -89,8 +89,8 @@
                                class="p-invalid"
                                style="color: red;">{{mensagemDeValidacao(competenciasForm.get('competencia'))}}</small>
                     </div>
-                    <span class="pr-1"></span>
-                    <div class="col-12 sm:col-2 md:col-2 mt-3">
+                    <span class="pr-5"></span>
+                    <div class="col-12 sm:col-3 md:col-3 mt-3">
                         <span class="ui-float-label">
                             <p-dropdown [options]="niveis" placeholder="." [showClear]="true" id="float-dropdown-nivel"
                                         formControlName="nivel">
@@ -100,12 +100,13 @@
                         <small *ngIf="deveMostrarMensagemDeValidacao(competenciasForm.get('nivel'))" class="p-invalid"
                                style="color: red;">{{mensagemDeValidacao(competenciasForm.get('nivel'))}}</small>
                     </div>
-                    <span class="pr-1"></span>
+                    <span class="pr-4"></span>
                     <div class="col-12 sm:col-2 md:col-2 mt-1">
                         <button type="button" icon="ui-icon-plus" pButton (click)="adicionarCompetencias()"></button>
                     </div>
 
-                    <p-table [value]="colaboradorForm.get('competencias').value" [responsive]="true" [paginator]="true" [rows]="10" class="mt-5">
+                    <p-table [value]="colaboradorForm.get('competencias').value" [responsive]="true" [paginator]="true"
+                             [rows]="3" class="mt-5">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th [ngStyle]="{'width': '125px'}">Competencia</th>
