@@ -10,6 +10,7 @@ import {Competencia} from 'src/app/domain/competencia/competencia.model';
 import {CompetenciaService} from 'src/app/shared/services/competencia.service';
 import {SenioridadeService} from 'src/app/shared/services/senioridade.service';
 import {ColaboradorService} from '../../../../shared/services/colaborador.service';
+import {CompetenciaResumo} from '../../../../domain/competencia/competencia-resumo.model';
 
 
 @Component({
@@ -111,7 +112,7 @@ export class ColaboradorFormComponent implements OnInit {
             return;
         }
         const competenciasForm: {
-            competencia: Competencia,
+            competencia: CompetenciaResumo,
             nivel: Nivel
         } = this.competenciasForm.value;
 
@@ -120,7 +121,7 @@ export class ColaboradorFormComponent implements OnInit {
             nome: competenciasForm.competencia.nome,
             nivel: competenciasForm.nivel
         };
-        const competenciasItens: CompetenciaDoColaborador[] = this.colaboradorForm.get('competencias').value;
+        const competenciasItens: CompetenciaDoColaborador[] = this.colaboradorForm.get('competencias').value || [];
 
         if (competenciasItens.some(c => c.id === competenciasForm.competencia.id && c.nome === competenciasForm.competencia.nome)) {
             this.messageService.addErrorMessage('Competência já cadastrada para esse colaborador!');

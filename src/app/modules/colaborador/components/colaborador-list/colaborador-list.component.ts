@@ -5,7 +5,7 @@ import {BlockUIService} from 'ng-block-ui';
 import {ConfirmationService} from 'primeng';
 import {Colaborador} from 'src/app/domain/colaborador/colaborador.model';
 import {ColaboradorService} from '../../../../shared/services/colaborador.service';
-import {ColaboradorFormComponent} from "../colaborador-form/colaborador-form.component";
+import {ColaboradorFormComponent} from '../colaborador-form/colaborador-form.component';
 
 
 @Component({
