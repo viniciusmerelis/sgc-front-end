@@ -28,7 +28,7 @@ export class ColaboradorService {
     }
 
     atualizar(colaboradorId: number, colaborador: Colaborador): Observable<Colaborador> {
-        return this.http.put<Colaborador>(`${this.apiUrl}/${colaboradorId}`, colaborador);
+        return this.http.put<Colaborador>(this.apiUrl, colaborador);
     }
 
     excluir(colaboradorId: number) {

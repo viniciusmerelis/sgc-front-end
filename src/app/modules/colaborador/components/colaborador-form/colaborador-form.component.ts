@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PageNotificationService} from '@nuvem/primeng-components';
-import {ConfirmationService, SelectItem} from 'primeng';
+import {SelectItem} from 'primeng';
 import {Colaborador} from 'src/app/domain/colaborador/colaborador.model';
 import {CompetenciaDoColaborador} from 'src/app/domain/colaborador/competencia-do-colaborador.model';
 import {Nivel, NivelUtil} from 'src/app/domain/colaborador/nivel.enum';
@@ -34,8 +34,7 @@ export class ColaboradorFormComponent implements OnInit {
         private colaboradorService: ColaboradorService,
         private senioridadeService: SenioridadeService,
         private competenicaService: CompetenciaService,
-        private messageService: PageNotificationService,
-        private confirmationDialog: ConfirmationService
+        private messageService: PageNotificationService
     ) {
     }
 
@@ -107,7 +106,7 @@ export class ColaboradorFormComponent implements OnInit {
     }
 
     adicionarCompetencias(): void {
-        if (this.competenciasForm.get('competencia').value == null || this.competenciasForm.get('nivel').value == null) {
+        if (this.isCompetenciasNull()) {
             this.messageService.addErrorMessage('Deve ser selecionda uma competência e seu nivel!');
             return;
         }
@@ -162,4 +161,7 @@ export class ColaboradorFormComponent implements OnInit {
         return '';
     }
 
+    isCompetenciasNull(): boolean {
+        return this.competenciasForm.get('competencia').value == null || this.competenciasForm.get('nivel').value == null;
+    }
 }

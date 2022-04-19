@@ -1,10 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Competencia } from 'src/app/domain/competencia/competencia.model';
-import { CompetenciaColaboradoresNivelMaximo } from 'src/app/domain/turma-formacao/competencia-colaboradores-nivel-maximo.model';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Competencia} from 'src/app/domain/competencia/competencia.model';
 import {Colaborador} from "../../domain/colaborador/colaborador.model";
-
+import {SelectItem} from "primeng";
 
 
 @Injectable({
@@ -38,7 +37,7 @@ export class CompetenciaService {
         return this.http.delete(`${this.apiUrl}/${competenciaId}`);
     }
 
-    buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId: number): Observable<Colaborador[]> {
-        return this.http.get<Colaborador[]>(`${this.apiUrl}/${competenciaId}?colaboradores=nivel-maximo`);
+    buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId: number): Observable<SelectItem[]> {
+        return this.http.get<SelectItem[]>(`${this.apiUrl}/${competenciaId}?colaboradores=nivel-maximo`);
     }
 }
