@@ -77,23 +77,10 @@ export class TurmaFormacaoFormComponent implements OnInit {
                 competenciasColaboradores: []
             });
         } else {
+            this.turma.dataInicio = new Date(this.turma.dataInicio);
+            this.turma.dataTermino = new Date(this.turma.dataTermino);
             this.turmaForm.setValue(this.turma);
         }
-    }
-
-    submit(): void {
-        const turma: Turma = this.turmaForm.value;
-        this.onSubmit.next(turma);
-    }
-
-    buscarColaboradoresComCompetenciaNivelMaximo(competenciaId: number) {
-        this.competenciaService.buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId).subscribe(
-            colaborador => {
-                this.colaboradores = colaborador;
-            }, (err: HttpErrorResponse) => {
-                this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
-            }
-        );
     }
 
     buscarStatus() {
@@ -108,6 +95,21 @@ export class TurmaFormacaoFormComponent implements OnInit {
         return this.competenciaService.listar().subscribe(
             competencia => this.competencias = competencia,
             (err: HttpErrorResponse) => this.messageService.addErrorMessage(err.error.userMessage, err.error.time));
+    }
+
+    buscarColaboradoresComCompetenciaNivelMaximo(competenciaId: number) {
+        this.competenciaService.buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId).subscribe(
+            colaborador => {
+                this.colaboradores = colaborador;
+            }, (err: HttpErrorResponse) => {
+                this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
+            }
+        );
+    }
+
+    submit(): void {
+        const turma: Turma = this.turmaForm.value;
+        this.onSubmit.next(turma);
     }
 
     limparDataTermino() {

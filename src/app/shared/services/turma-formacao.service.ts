@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { TurmaDto } from 'src/app/domain/turma-formacao/turma-dto.model';
-import { Turma } from 'src/app/domain/turma-formacao/turma.model';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Turma} from 'src/app/domain/turma-formacao/turma.model';
 
 
 @Injectable({
@@ -24,12 +23,12 @@ export class TurmaFormacaoService {
         return this.http.get<Turma>(`${this.apiUrl}/${turmaId}`);
     }
 
-    salvar(turmaDto: TurmaDto): Observable<Turma> {
-        return this.http.post<Turma>(this.apiUrl, turmaDto);
+    salvar(turma: Turma): Observable<Turma> {
+        return this.http.post<Turma>(this.apiUrl, turma);
     }
 
-    atualizar(id: number, turmaDto: TurmaDto): Observable<Turma> {
-        return this.http.put<Turma>(`${this.apiUrl}/${id}`, turmaDto);
+    atualizar(id: number, turma: Turma): Observable<Turma> {
+        return this.http.put<Turma>(this.apiUrl, turma);
     }
 
     excluir(id: number) {

@@ -1,12 +1,10 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { TurmaFormacaoFormComponent } from './components/turma-formacao-form/turma-formacao-form.component';
-import { TurmaFormacaoListComponent } from './components/turma-formacao-list/turma-formacao-list.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {TurmaFormacaoListComponent} from './components/turma-formacao-list/turma-formacao-list.component';
 
 
 const routes: Routes = [
-  { path: '', component: TurmaFormacaoListComponent, pathMatch: 'full' },
-  { path: ':param', component: TurmaFormacaoFormComponent }
+  { path: '', component: TurmaFormacaoListComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
