@@ -4,7 +4,7 @@ import {PageNotificationService} from '@nuvem/primeng-components';
 import {ConfirmationService} from 'primeng';
 import {Turma} from 'src/app/domain/turma-formacao/turma.model';
 import {TurmaFormacaoService} from 'src/app/shared/services/turma-formacao.service';
-import {TurmaFormacaoFormComponent} from "../turma-formacao-form/turma-formacao-form.component";
+import {TurmaFormacaoFormComponent} from '../turma-formacao-form/turma-formacao-form.component';
 
 
 @Component({
@@ -53,7 +53,7 @@ export class TurmaFormacaoListComponent implements OnInit {
             this.messageService.addCreateMsg('Turma salva com sucesso!');
         }, (err: HttpErrorResponse) => {
             this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
-        })
+        });
     }
 
     atualizarTurma(turma: Turma) {
@@ -63,7 +63,7 @@ export class TurmaFormacaoListComponent implements OnInit {
     excluirTurma(turma: Turma) {
         this.confirmationDialog.confirm({
             header: 'Confirmar exclusão',
-            message: "Deseja realmente excluir essa turma?",
+            message: 'Deseja realmente excluir essa turma?',
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
             accept: () => {

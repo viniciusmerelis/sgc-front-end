@@ -3,9 +3,9 @@
         <h2>Lista de Turma Formação</h2>
         <span class="col"></span>
         <button pButton type="button" icon="ui-icon-plus" class="ui-button-success" iconPos="left" label="Nova Turma"
-            [routerLink]="'criar'"></button>
+            (click)="novaTurma()"></button>
     </div>
-    <p-table [value]="turmas" [responsive]="true" [scrollable]="true" scrollHeight="250px">
+    <p-table [value]="turmas" [responsive]="true" [paginator]="true" [rows]="10">
         <ng-template pTemplate="header">
             <tr>
                 <th [ngStyle]="{'width': '120px'}">Nome</th>
@@ -34,4 +34,16 @@
         </ng-template>
     </p-table>
 </p-card>
+<p-dialog [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}" [draggable]="false">
+    <app-turma-formacao-form *ngIf="displayModal" [turma]="turma" (onSubmit)="submitForm($event)">
+    </app-turma-formacao-form>
+    <p-footer>
+        <div>
+            <button pButton type="button" label="Salvar" icon="ui-icon-check" iconPos="left"
+                    (click)="turmForm?.submit()"></button>
+            <button pButton type="button" label="Cancelar" icon="ui-icon-times" iconPos="left"
+                    class="ui-button-secondary" (click)="fecharModal()"></button>
+        </div>
+    </p-footer>
+</p-dialog>
 <p-confirmDialog></p-confirmDialog>
