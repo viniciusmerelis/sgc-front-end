@@ -10,7 +10,7 @@ import {Turma} from 'src/app/domain/turma-formacao/turma.model';
 import {CompetenciaService} from 'src/app/shared/services/competencia.service';
 import {TurmaFormacaoService} from 'src/app/shared/services/turma-formacao.service';
 import {StatusService} from '../../../../shared/services/status.service';
-import {CompetenciaResumo} from "../../../../domain/competencia/competencia-resumo.model";
+import {CompetenciaResumo} from '../../../../domain/competencia/competencia-resumo.model';
 
 
 @Component({
@@ -74,7 +74,7 @@ export class TurmaFormacaoFormComponent implements OnInit {
                 dataInicio: null,
                 dataTermino: null,
                 status: null,
-                competenciasColaboradores: []
+                competenciasEColaboradores: []
             });
         } else {
             this.turma.dataInicio = new Date(this.turma.dataInicio);
@@ -97,7 +97,7 @@ export class TurmaFormacaoFormComponent implements OnInit {
             (err: HttpErrorResponse) => this.messageService.addErrorMessage(err.error.userMessage, err.error.time));
     }
 
-    buscarColaboradoresComCompetenciaNivelMaximo(competenciaId: number) {
+    buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId: number) {
         this.competenciaService.buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId).subscribe(
             colaborador => {
                 this.colaboradores = colaborador;
@@ -124,7 +124,7 @@ export class TurmaFormacaoFormComponent implements OnInit {
 
     adicionarCompetenciaEColaborador() {
         if (this.competenciaEColaboradorForm.get('competencia').value == null || this.competenciaEColaboradorForm.get('colaborador').value == null) {
-            this.messageService.addErrorMessage("Deve ser informado pelo menos uma competência e um colaborador.", "Falha ao inserir");
+            this.messageService.addErrorMessage('Deve ser informado pelo menos uma competência e um colaborador.', 'Falha ao inserir');
         }
 
         const competenciaEColaboradorForm: {
@@ -132,19 +132,17 @@ export class TurmaFormacaoFormComponent implements OnInit {
             colaborador: ColaboradorResumo
         } = this.competenciaEColaboradorForm.value;
 
-        let competenciasColaboradoresItens: CompetenciaEColaborador[] = this.turmaForm.get('competenciasColaboradores').value;
+        let competenciasColaboradoresItens: CompetenciaEColaborador[] = this.turmaForm.get('competenciasEColaboradores').value;
 
         if (competenciasColaboradoresItens.some(ccItens =>
-            ccItens.competencia.id == competenciaEColaboradorForm.competencia.id &&
-            ccItens.colaborador.id == competenciaEColaboradorForm.colaborador.id
+            ccItens.competencia.id === competenciaEColaboradorForm.competencia.id &&
+            ccItens.colaborador.id === competenciaEColaboradorForm.colaborador.id
         )) {
-            this.messageService.addErrorMessage("Este colaborador já está cadastrado para esta competência.", "Falha ao inserir");
+            this.messageService.addErrorMessage('Este colaborador já está cadastrado para esta competência.", "Falha ao inserir');
             return;
         }
-
         competenciasColaboradoresItens.push(competenciaEColaboradorForm);
-
-        this.turmaForm.get('competenciasColaboradores').setValue(competenciasColaboradoresItens);
+        this.turmaForm.get('competenciasEColaboradores').setValue(competenciasColaboradoresItens);
         this.competenciaEColaboradorForm.setValue({
             competencia: null,
             colaborador: null
@@ -152,9 +150,9 @@ export class TurmaFormacaoFormComponent implements OnInit {
     }
 
     excluirItem(indexRow: number) {
-        let ccItens: CompetenciaEColaborador[] = [...this.turmaForm.get('competenciasColaboradores').value];
+        let ccItens: CompetenciaEColaborador[] = [...this.turmaForm.get('competenciasEColaboradores').value];
         ccItens.splice(indexRow, 1);
-        this.turmaForm.get('competenciasColaboradores').setValue(ccItens);
+        this.turmaForm.get('competenciasEColaboradores').setValue(ccItens);
     }
 
     deveMostrarMensagemDeValidacao(control: AbstractControl): boolean {

@@ -10,7 +10,6 @@
                     <small *ngIf="deveMostrarMensagemDeValidacao(turmaForm.get('nome'))" class="p-invalid"
                            style="color: red;">{{mensagemDeValidacao(turmaForm.get('nome'))}}</small>
                 </div>
-
                 <div class="col-12 mt-3 sm:col-10 md:col-10">
                     <span class="ui-float-label">
                         <input id="float-input-descricao" type="text" pInputText autocomplete="off"
@@ -20,7 +19,6 @@
                     <small *ngIf="deveMostrarMensagemDeValidacao(turmaForm.get('descricao'))" class="p-invalid"
                            style="color: red;">{{mensagemDeValidacao(turmaForm.get('descricao'))}}</small>
                 </div>
-
                 <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
                     <span class="ui-float-label">
                         <p-calendar dateFormat="dd/mm/yy" (onSelect)="limparDataTermino()" [yearNavigator]="true"
@@ -31,7 +29,6 @@
                     <small *ngIf="deveMostrarMensagemDeValidacao(turmaForm.get('dataInicio'))" class="p-invalid"
                            style="color: red;">{{mensagemDeValidacao(turmaForm.get('dataInicio'))}}</small>
                 </div>
-
                 <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
                     <span class="ui-float-label">
                         <p-calendar dateFormat="dd/mm/yy" [minDate]="turmaForm.get('dataInicio').value"
@@ -43,7 +40,6 @@
                     <small *ngIf="deveMostrarMensagemDeValidacao(turmaForm.get('dataTermino'))" class="p-invalid"
                            style="color: red;">{{mensagemDeValidacao(turmaForm.get('dataTermino'))}}</small>
                 </div>
-
                 <div class="col-12 sm:col-2 md:col-2 mb-2 mt-5">
                     <span class="ui-float-label">
                         <p-dropdown [options]="status" placeholder="." optionLabel="nome" [showClear]="true"
@@ -63,19 +59,19 @@
             <span class="mt-3"></span>
             <p-fieldset legend="Competências e Colaboradores">
                 <div class="grid mb-5 pl-2 pr-2 align-items-center">
-                    <div class="col-12 sm:col-2 md:col-2 mt-3">
+                    <div class="col-12 sm:col-3 md:col-3 mt-3">
                         <span class="ui-float-label">
                             <p-dropdown [options]="competencias" [(ngModel)]="competenciaSelecionada" placeholder="."
                                         id="float-input-competencia"
                                         optionLabel="nome" [showClear]="true"
-                                        (onChange)="buscarColaboradoresComCompetenciaNivelMaximo(competenciaSelecionada.id)"
+                                        (onChange)="buscarColaboradoresComNivelMaximoNaCompetencia(competenciaSelecionada.id)"
                                         formControlName="competencia">
                             </p-dropdown>
                             <label for="float-input-competencia">Competencia</label>
                         </span>
                     </div>
-                    <span class="pr-1"></span>
-                    <div class="col-12 sm:col-2 md:col-2 mt-3">
+                    <span class="pr-5"></span>
+                    <div class="col-12 sm:col-3 md:col-3 mt-3">
                         <span class="ui-float-label">
                             <p-dropdown [options]="colaboradores" placeholder="." [showClear]="true"
                                         id="float-input-colaborador"
@@ -89,8 +85,7 @@
                         <button type="button" icon="ui-icon-plus" pButton
                                 (click)="adicionarCompetenciaEColaborador()"></button>
                     </div>
-
-                    <p-table [value]="turmaForm.get('competenciasColaboradores').value" [responsive]="true"
+                    <p-table [value]="turmaForm.get('competenciasEColaboradores').value" [responsive]="true"
                              [scrollable]="true" scrollHeight="150px" class="mt-5">
                         <ng-template pTemplate="header">
                             <tr>
