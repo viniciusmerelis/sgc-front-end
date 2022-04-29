@@ -2,7 +2,6 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PageNotificationService} from '@nuvem/primeng-components';
-import {SelectItem} from 'primeng';
 import {ColaboradorResumo} from 'src/app/domain/turma-formacao/colaborador-resumo.model';
 import {CompetenciaEColaborador} from 'src/app/domain/turma-formacao/competencia-colaborador.model';
 import {Status} from 'src/app/domain/turma-formacao/status.model';
@@ -23,7 +22,7 @@ export class TurmaFormacaoFormComponent implements OnInit {
     status: Status[];
     competencias: CompetenciaResumo[] = [];
     competenciaSelecionada: CompetenciaResumo;
-    colaboradores: SelectItem[] = [];
+    colaboradores: ColaboradorResumo[] = [];
     turmaForm: FormGroup;
     competenciaEColaboradorForm: FormGroup;
     @Input() displayModal: Boolean = false;

@@ -34,7 +34,7 @@ export class TurmaFormacaoListComponent implements OnInit {
         return this.turmaService.listar().subscribe(turma => {
             this.turmas = turma
         }, (err: HttpErrorResponse) => {
-            this.messageService.addErrorMessage('Não foi possível listar as turmas');
+            this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
         });
     }
 
@@ -57,7 +57,13 @@ export class TurmaFormacaoListComponent implements OnInit {
     }
 
     atualizarTurma(turma: Turma) {
-        this.turmaService.atualizar(turma.id, turma)
+        this.turmaService.atualizar(turma.id, turma).subscribe(() => {
+            this.fecharModal();
+            this.listarTurmas();
+            this.messageService.addUpdateMsg('Turma atualizada com sucesso!');
+        }, (err: HttpErrorResponse) => {
+            this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
+        });
     }
 
     excluirTurma(turma: Turma) {
