@@ -21,10 +21,11 @@ export class TurmaFormacaoFormComponent implements OnInit {
 
     status: Status[];
     competencias: CompetenciaResumo[] = [];
-    competenciaSelecionada: CompetenciaResumo;
+    // competenciaSelecionada: CompetenciaResumo;
     colaboradores: ColaboradorResumo[] = [];
     turmaForm: FormGroup;
     competenciaEColaboradorForm: FormGroup;
+    desativarBotao: boolean = true;
     @Input() displayModal: Boolean = false;
     @Input() turma: Turma;
     @Output() onSubmit = new EventEmitter<Turma>();
@@ -62,6 +63,13 @@ export class TurmaFormacaoFormComponent implements OnInit {
             competencia: new FormControl(null),
             colaborador: new FormControl(null)
         });
+        this.competenciaEColaboradorForm.valueChanges.subscribe(() => {
+            if (this.competenciaEColaboradorForm.get('competencia').value !== null && this.competenciaEColaboradorForm.get('colaborador').value !== null) {
+                this.desativarBotao = false;
+            } else {
+                this.desativarBotao = true;
+            }
+        });
     }
 
     definirTurmaForm() {
@@ -96,14 +104,17 @@ export class TurmaFormacaoFormComponent implements OnInit {
             (err: HttpErrorResponse) => this.messageService.addErrorMessage(err.error.userMessage, err.error.time));
     }
 
-    buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId: number) {
-        this.competenciaService.buscarColaboradoresComNivelMaximoNaCompetencia(competenciaId).subscribe(
-            colaborador => {
-                this.colaboradores = colaborador;
-            }, (err: HttpErrorResponse) => {
-                this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
-            }
-        );
+    buscarColaboradoresComNivelMaximoNaCompetencia(): void {
+        const competencia: CompetenciaResumo = this.competenciaEColaboradorForm.get('competencia').value;
+        if (competencia) {
+            this.competenciaService.buscarColaboradoresComNivelMaximoNaCompetencia(competencia.id).subscribe(
+                colaborador => {
+                    this.colaboradores = colaborador;
+                }, (err: HttpErrorResponse) => {
+                    this.messageService.addErrorMessage(err.error.userMessage, err.error.title);
+                }
+            );
+        }
     }
 
     submit(): void {
@@ -122,10 +133,6 @@ export class TurmaFormacaoFormComponent implements OnInit {
     }
 
     adicionarCompetenciaEColaborador() {
-        if (this.competenciaEColaboradorForm.get('competencia').value == null || this.competenciaEColaboradorForm.get('colaborador').value == null) {
-            this.messageService.addErrorMessage('Deve ser informado pelo menos uma competência e um colaborador.', 'Falha ao inserir');
-        }
-
         const competenciaEColaboradorForm: {
             competencia: CompetenciaResumo,
             colaborador: ColaboradorResumo
@@ -134,8 +141,8 @@ export class TurmaFormacaoFormComponent implements OnInit {
         let competenciasColaboradoresItens: CompetenciaEColaborador[] = this.turmaForm.get('competenciasEColaboradores').value;
 
         if (competenciasColaboradoresItens.some(ccItens =>
-            ccItens.competencia.id === competenciaEColaboradorForm.competencia.id &&
-            ccItens.colaborador.id === competenciaEColaboradorForm.colaborador.id
+            ccItens.competencia.id == competenciaEColaboradorForm.competencia.id &&
+            ccItens.colaborador.id == competenciaEColaboradorForm.colaborador.id
         )) {
             this.messageService.addErrorMessage('Este colaborador já está cadastrado para esta competência.", "Falha ao inserir');
             return;
