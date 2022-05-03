@@ -61,10 +61,10 @@
                 <div class="grid mb-5 pl-2 pr-2 align-items-center">
                     <div class="col-12 sm:col-3 md:col-3 mt-3">
                         <span class="ui-float-label">
-                            <p-dropdown [options]="competencias" [(ngModel)]="competenciaSelecionada" placeholder="."
+                            <p-dropdown [options]="competencias" placeholder="."
                                         id="float-input-competencia"
                                         optionLabel="nome" [showClear]="true"
-                                        (onChange)="buscarColaboradoresComNivelMaximoNaCompetencia(competenciaSelecionada.id)"
+                                        (onChange)="buscarColaboradoresComNivelMaximoNaCompetencia()"
                                         formControlName="competencia">
                             </p-dropdown>
                             <label for="float-input-competencia">Competencia</label>
@@ -75,6 +75,7 @@
                         <span class="ui-float-label">
                             <p-dropdown [options]="colaboradores" placeholder="." [showClear]="true"
                                         id="float-input-colaborador"
+                                        optionLabel="nome"
                                         formControlName="colaborador">
                             </p-dropdown>
                             <label for="float-input-colaborador">Colaborador</label>
@@ -82,7 +83,7 @@
                     </div>
                     <span class="pr-3"></span>
                     <div class="col-12 sm:col-2 md:col-2 mt-5">
-                        <button type="button" icon="ui-icon-plus" pButton
+                        <button type="button" icon="ui-icon-plus" pButton [disabled]="desativarBotao"
                                 (click)="adicionarCompetenciaEColaborador()"></button>
                     </div>
                     <p-table [value]="turmaForm.get('competenciasEColaboradores').value" [responsive]="true"
